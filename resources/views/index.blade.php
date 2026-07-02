@@ -301,24 +301,7 @@
                 </div>
             </div>
         </div>
-        @if(session('comercialid') == 1)
-            <div class="col-lg-4">
-                <div class="card dashboard-card  ">
-                    <div class="card-header bg-transparent border-0">
-                        <h5 class="section-title mb-0">
-                            <i class="ri-cellphone-fill"></i>
-                            Existencias Celulares
-                        </h5>
-                    </div>
 
-                    <div class="card-footer bg-transparent border-0">
-                        <a href="/existencia/celulares" class="btn btn-outline-warning w-100">
-                            Gestionar celulares
-                        </a>
-                    </div>
-                </div>
-            </div>
-        @endif
         <div class="col-lg-4">
             <div class="card dashboard-card ">
                 <div class="card-header bg-transparent border-0">
@@ -351,11 +334,6 @@
                         </a>
                     @endif
 
-                    @if(session('comercialid') == 1)
-                        <a href="/tesoro" class="quick-action-btn">
-                            <i class="ri-add-line"></i>Confirmar Pago movil
-                        </a>
-                    @endif
 
                     <a href="/reporte/instpagobs" class="quick-action-btn">
                         <i class="ri-file-chart-line"></i> Rep InstPago BS
