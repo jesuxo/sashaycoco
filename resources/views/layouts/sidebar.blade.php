@@ -47,11 +47,7 @@
                         </ul>
                         @if(Auth::user() and auth()->user()->type == 'admin')
                             <ul class="nav nav-sm flex-column">
-                                @if(session('comercialid') == 1)
-                                    <li class="nav-item">
-                                        <a href="/tesoro" class="nav-link" data-key="t-confirm-payment">Confirmar Pago Móvil</a>
-                                    </li>
-                                @endif
+
                                 <li class="nav-item">
                                     <a href="/reporte/venta" class="nav-link" data-key="t-sales-report">Reporte de Ventas</a>
                                 </li>
@@ -106,7 +102,7 @@
                                 </li>
                             @endif
 
-                            <li class="nav-item  ">
+                            <li class="nav-item d-none  ">
                                 <a href="/sugerir-transferencias" class="nav-link" data-key="t-transfer-suggestions">
                                     <i class="bi bi-arrow-left-right me-2 text-warning"></i>
                                     <span class="fw-semibold">Sugerir Transferencias</span>
