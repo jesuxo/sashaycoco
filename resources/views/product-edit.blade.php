@@ -348,8 +348,7 @@
     <!-- App js -->
     <script src="{{ URL::asset('build/js/app.js') }}"></script>
 
-    <script>
-        $(document).ready(function() {
+    <script> $(document).ready(function() {
             const codprod = $('#codprod').val();
             const dropzoneArea = $('#dropzoneArea');
             const fileInput = $('#fileInput');
@@ -358,12 +357,16 @@
             const progressBarInner = $('#progressBarInner');
             const urlBase = '/productos-imagenes';
 
+            let cargando = false;
+            let cargandoImagenes = false; // Nuevo flag para controlar carga de imágenes
+
             // Cargar imágenes existentes
             cargarImagenes();
 
             // Eventos de dropzone
             dropzoneArea.on('click', function(e) {
-                if (e.target === this || $(e.target).closest('.text-center').length) {
+                // Evitar que el click se propague al input file si ya estamos en él
+                if (!$(e.target).closest('#fileInput').length) {
                     fileInput.click();
                 }
             });
@@ -380,6 +383,7 @@
 
             dropzoneArea.on('drop', function(e) {
                 e.preventDefault();
+                e.stopPropagation(); // IMPORTANTE: evitar propagación
                 $(this).removeClass('dragover');
                 const files = e.originalEvent.dataTransfer.files;
                 if (files.length > 0) {
@@ -387,14 +391,30 @@
                 }
             });
 
-            fileInput.on('change', function() {
-                if (this.files.length > 0) {
-                    subirImagenes(this.files);
-                    this.value = ''; // Reset
+            // Manejar el cambio del input file con control de recursión
+            fileInput.on('change', function(e) {
+                // Prevenir múltiples disparos
+                e.preventDefault();
+                e.stopPropagation();
+
+                if (this.files && this.files.length > 0) {
+                    // Guardar referencia a los archivos
+                    const files = this.files;
+
+                    // IMPORTANTE: Resetear el input ANTES de procesar para evitar loops
+                    // Usar setTimeout para que el reset no interfiera con el event loop
+                    const inputElement = this;
+                    setTimeout(function() {
+                        inputElement.value = '';
+                    }, 10);
+
+                    subirImagenes(files);
                 }
             });
 
-            $('#btnAgregarImagenes').on('click', function() {
+            $('#btnAgregarImagenes').on('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
                 fileInput.click();
             });
 
@@ -404,40 +424,52 @@
             // ============================================
 
             // Evento para establecer como principal
-            $(document).on('click', '.set-principal', function() {
+            $(document).on('click', '.set-principal', function(e) {
+                e.preventDefault();
                 const id = $(this).data('id');
-                setPrincipal(id);
+                if (id) {
+                    setPrincipal(id);
+                }
             });
 
             // Evento para establecer como thumbnail
-            $(document).on('click', '.set-thumbnail', function() {
+            $(document).on('click', '.set-thumbnail', function(e) {
+                e.preventDefault();
                 const id = $(this).data('id');
-                setThumbnail(id);
+                if (id) {
+                    setThumbnail(id);
+                }
             });
 
             // Evento para establecer como icono
-            $(document).on('click', '.set-icono', function() {
+            $(document).on('click', '.set-icono', function(e) {
+                e.preventDefault();
                 const id = $(this).data('id');
-                setIcono(id);
+                if (id) {
+                    setIcono(id);
+                }
             });
 
             // Evento para eliminar imagen
-            $(document).on('click', '.eliminar-imagen', function() {
+            $(document).on('click', '.eliminar-imagen', function(e) {
+                e.preventDefault();
                 const id = $(this).data('id');
-                Swal.fire({
-                    title: '¿Estás seguro?',
-                    text: "Esta acción no se puede deshacer",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Sí, eliminar',
-                    cancelButtonText: 'Cancelar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        eliminarImagen(id);
-                    }
-                });
+                if (id) {
+                    Swal.fire({
+                        title: '¿Estás seguro?',
+                        text: "Esta acción no se puede deshacer",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Sí, eliminar',
+                        cancelButtonText: 'Cancelar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            eliminarImagen(id);
+                        }
+                    });
+                }
             });
 
             // ============================================
@@ -445,6 +477,12 @@
             // ============================================
 
             function cargarImagenes() {
+                // Prevenir múltiples llamadas simultáneas
+                if (cargandoImagenes) {
+                    return;
+                }
+                cargandoImagenes = true;
+
                 $.ajax({
                     url: urlBase + '/' + codprod,
                     type: 'GET',
@@ -455,28 +493,36 @@
                         if (response.success) {
                             renderizarGaleria(response);
                         }
+                        cargandoImagenes = false;
                     },
                     error: function(xhr) {
                         console.error('Error al cargar imágenes:', xhr);
                         mostrarError('Error al cargar las imágenes');
+                        cargandoImagenes = false;
                     }
                 });
             }
 
             function renderizarGaleria(data) {
-                galeria.empty();
+                // Limpiar la galería de manera segura
+                const galeriaElement = galeria[0];
+                if (galeriaElement) {
+                    galeriaElement.innerHTML = '';
+                }
 
                 if (!data.imagenes || data.imagenes.length === 0) {
                     galeria.html(`
-                    <div class="col-12 text-center text-muted py-4">
-                        <i class="bi bi-image" style="font-size: 48px;"></i>
-                        <p>No hay imágenes para este producto</p>
-                    </div>
-                `);
+                <div class="col-12 text-center text-muted py-4">
+                    <i class="bi bi-image" style="font-size: 48px;"></i>
+                    <p>No hay imágenes para este producto</p>
+                </div>
+            `);
                     return;
                 }
 
-                data.imagenes.forEach(function(imagen, index) {
+                // Construir HTML de manera eficiente
+                let html = '';
+                data.imagenes.forEach(function(imagen) {
                     const esPrincipal = imagen.tipo === 'principal' && imagen.activo === 1;
                     const esThumbnail = imagen.tipo === 'thumbnail' && imagen.activo === 1;
                     const esIcono = imagen.tipo === 'icono' && imagen.activo === 1;
@@ -485,76 +531,71 @@
                     if (esPrincipal) badges += '<span class="badge bg-success me-1">Principal</span>';
                     if (esThumbnail) badges += '<span class="badge bg-info me-1">Thumbnail</span>';
                     if (esIcono) badges += '<span class="badge bg-warning me-1">Icono</span>';
-                    if (imagen.tipo === 'secundaria' && !esPrincipal && !esThumbnail && !esIcono) {
+                    if (!esPrincipal && !esThumbnail && !esIcono && imagen.tipo === 'secundaria') {
                         badges += '<span class="badge bg-secondary me-1">Secundaria</span>';
                     }
 
-                    // Construir botones de acciones
                     let botones = '';
 
-                    // Botón principal (si no es principal)
                     if (!esPrincipal) {
                         botones += `<button class="btn btn-sm btn-success set-principal" data-id="${imagen.id}" title="Establecer como principal">
-                        <i class="bi bi-star"></i>
-                    </button>`;
+                    <i class="bi bi-star"></i>
+                </button>`;
                     } else {
                         botones += `<button class="btn btn-sm btn-outline-success" disabled title="Ya es principal">
-                        <i class="bi bi-star-fill"></i>
-                    </button>`;
+                    <i class="bi bi-star-fill"></i>
+                </button>`;
                     }
 
-                    // Botón thumbnail (si no es principal y no es thumbnail)
                     if (!esPrincipal && !esThumbnail) {
                         botones += `<button class="btn btn-sm btn-info set-thumbnail" data-id="${imagen.id}" title="Establecer como thumbnail">
-                        <i class="bi bi-image"></i>
-                    </button>`;
+                    <i class="bi bi-image"></i>
+                </button>`;
                     } else if (esThumbnail) {
                         botones += `<button class="btn btn-sm btn-outline-info" disabled title="Ya es thumbnail">
-                        <i class="bi bi-image-fill"></i>
-                    </button>`;
+                    <i class="bi bi-image-fill"></i>
+                </button>`;
                     }
 
-                    // Botón icono (si no es principal y no es icono)
                     if (!esPrincipal && !esIcono) {
                         botones += `<button class="btn btn-sm btn-warning set-icono" data-id="${imagen.id}" title="Establecer como icono">
-                        <i class="bi bi-square"></i>
-                    </button>`;
+                    <i class="bi bi-square"></i>
+                </button>`;
                     } else if (esIcono) {
                         botones += `<button class="btn btn-sm btn-outline-warning" disabled title="Ya es icono">
-                        <i class="bi bi-square-fill"></i>
-                    </button>`;
+                    <i class="bi bi-square-fill"></i>
+                </button>`;
                     }
 
-                    // Botón eliminar (siempre visible)
                     botones += `<button class="btn btn-sm btn-danger eliminar-imagen" data-id="${imagen.id}" title="Eliminar">
-                    <i class="bi bi-trash"></i>
-                </button>`;
+                <i class="bi bi-trash"></i>
+            </button>`;
 
-                    const card = `
-                    <div class="col-md-3 col-sm-4 col-6 galeria-imagen">
-                        <div class="imagen-card">
-                            <img src="/${imagen.ruta}" alt="${imagen.nombre_original}" loading="lazy"
-                                 onerror="this.src='{{ asset('images/no-image.png') }}'">
-                            ${badges ? `<div class="badge-tipo">${badges}</div>` : ''}
-                            <div class="acciones">
-                                ${botones}
-                            </div>
-                            ${imagen.orden !== undefined ? `<small class="text-muted d-block text-center">Orden: ${imagen.orden}</small>` : ''}
+                    html += `
+                <div class="col-md-3 col-sm-4 col-6 galeria-imagen">
+                    <div class="imagen-card">
+                        <img src="/${imagen.ruta}" alt="${imagen.nombre_original}" loading="lazy"
+                             onerror="this.src='{{ asset('images/no-image.png') }}'">
+                        ${badges ? `<div class="badge-tipo">${badges}</div>` : ''}
+                        <div class="acciones">
+                            ${botones}
                         </div>
+                        ${imagen.orden !== undefined ? `<small class="text-muted d-block text-center">Orden: ${imagen.orden}</small>` : ''}
                     </div>
-                `;
-                    galeria.append(card);
+                </div>
+            `;
                 });
 
-                // Actualizar el contador de imágenes
-                const totalImagenes = data.imagenes.length;
-                const totalActivas = data.imagenes.filter(img => img.activo === 1).length;
+                galeria.html(html);
 
-                // Mostrar contador en el header
-                const headerTitle = $('.card-header h5');
-                if (headerTitle.length) {
-                    headerTitle.text(`Imágenes del Producto (${totalActivas})`);
-                }
+                // Actualizar el contador de imágenes
+                const totalActivas = data.imagenes.filter(img => img.activo === 1).length;
+                $('.card-header .card-title').each(function() {
+                    const text = $(this).text();
+                    if (text.includes('Imágenes del Producto')) {
+                        $(this).text(`Imágenes del Producto (${totalActivas})`);
+                    }
+                });
             }
 
             function subirImagenes(files) {
@@ -567,17 +608,17 @@
                 const formData = new FormData();
                 formData.append('codprod', codprod);
 
+                let archivosValidos = 0;
                 $.each(files, function(index, file) {
-                    // Validar tamaño (5MB)
                     if (file.size > 5 * 1024 * 1024) {
                         mostrarError(`El archivo ${file.name} excede el tamaño máximo de 5MB`);
                         return;
                     }
                     formData.append('imagenes[]', file);
+                    archivosValidos++;
                 });
 
-                // Si no hay archivos válidos, salir
-                if (formData.getAll('imagenes[]').length === 0) {
+                if (archivosValidos === 0) {
                     return;
                 }
 
@@ -645,7 +686,6 @@
             }
 
             function setPrincipal(id) {
-                // Mostrar loading
                 Swal.fire({
                     title: 'Actualizando...',
                     text: 'Estableciendo imagen como principal',
@@ -687,7 +727,6 @@
             }
 
             function setThumbnail(id) {
-                // Mostrar loading
                 Swal.fire({
                     title: 'Actualizando...',
                     text: 'Estableciendo imagen como thumbnail',
@@ -729,7 +768,6 @@
             }
 
             function setIcono(id) {
-                // Mostrar loading
                 Swal.fire({
                     title: 'Actualizando...',
                     text: 'Estableciendo imagen como icono',
@@ -771,7 +809,6 @@
             }
 
             function eliminarImagen(id) {
-                // Mostrar loading
                 Swal.fire({
                     title: 'Eliminando...',
                     text: 'Por favor espera',

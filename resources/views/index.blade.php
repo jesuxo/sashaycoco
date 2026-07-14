@@ -334,7 +334,6 @@
                         </a>
                     @endif
 
-
                     <a href="/reporte/instpagobs" class="quick-action-btn">
                         <i class="ri-file-chart-line"></i> Rep InstPago BS
                     </a>
@@ -343,15 +342,7 @@
                         <i class="ri-file-chart-line"></i> Rep InstPago USD
                     </a>
 
-                    @if(session('comercialid') == 6)
-                        <a href="/pagos-proveedores" class="quick-action-btn">
-                            <i class="ri-motorbike-fill"></i> Motos pagas
-                        </a>
-                    @endif
 
-                    <a href="/seriales/historial" class="quick-action-btn">
-                        <i class="bi bi-list-ul"></i> Historial Seriales
-                    </a>
                 </div>
             </div>
         </div>
