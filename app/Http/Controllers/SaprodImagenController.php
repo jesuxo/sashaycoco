@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Sacomercial;
 use App\Models\Saprod;
 use App\Models\SaprodImagen;
+use App\Models\Saprodsucursal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\ImageManagerStatic as Image;
@@ -51,11 +53,11 @@ class SaprodImagenController extends Controller
         }
 
         return response()->json([
-            'success' => true,
-            'imagenes' => $imagenes,
+            'success'          => true,
+            'imagenes'         => $imagenes,
             'imagen_principal' => $principal,
-            'thumbnail' => $thumbnail,
-            'icono' => $icono
+            'thumbnail'        => $thumbnail,
+            'icono'            => $icono
         ]);
     }
 
@@ -78,13 +80,17 @@ class SaprodImagenController extends Controller
             ], 422);
         }
 
-        $comercial = session('comercialid');
-        $codprod = $request->codprod;
-        $tipo = $request->tipo ?? 'secundaria';
-        $orden = $request->orden ?? 0;
+        $comercialid = session('comercialid') ;
+
+        $comercial   = Sacomercial::find($comercialid);
+        $match       = $comercial->match;
+
+        $codprod     = $request->codprod;
+        $tipo        = $request->tipo ?? 'secundaria';
+        $orden       = $request->orden ?? 0;
 
         $producto = Saprod::where('codprod', $codprod)
-            ->where('comercial', $comercial)
+            ->where('comercial', $comercialid)
             ->first();
 
         if (!$producto) {
@@ -97,7 +103,7 @@ class SaprodImagenController extends Controller
         // Si es principal, quitar la principal anterior
         if ($tipo === 'principal') {
             SaprodImagen::where('codprod', $codprod)
-                ->where('comercial', $comercial)
+                ->where('comercial', $comercialid)
                 ->where('tipo', 'principal')
                 ->update(['activo' => 0]);
         }
@@ -105,14 +111,14 @@ class SaprodImagenController extends Controller
         // Si es thumbnail o icono, quitar el anterior del mismo tipo
         if (in_array($tipo, ['thumbnail', 'icono'])) {
             SaprodImagen::where('codprod', $codprod)
-                ->where('comercial', $comercial)
+                ->where('comercial', $comercialid)
                 ->where('tipo', $tipo)
                 ->update(['activo' => 0]);
         }
 
-        $file = $request->file('imagen');
+        $file           = $request->file('imagen');
         $nombreOriginal = $file->getClientOriginalName();
-        $extension = strtolower($file->getClientOriginalExtension());
+        $extension      = strtolower($file->getClientOriginalExtension());
 
         $nombreArchivo = time() . '_' . uniqid($codprod . '_') . '.' . $extension;
 
@@ -127,7 +133,7 @@ class SaprodImagenController extends Controller
 
         $imagenModel = SaprodImagen::create([
             'codprod' => $codprod,
-            'comercial' => $comercial,
+            'comercial' => $comercialid,
             'nombre_original' => $nombreOriginal,
             'nombre_archivo' => $nombreArchivo,
             'ruta' => $this->uploadPath . '/' . $nombreArchivo,
@@ -135,6 +141,13 @@ class SaprodImagenController extends Controller
             'orden' => $orden,
             'activo' => 1
         ]);
+
+        $prodsucursal = Saprodsucursal::with('producto')->where('codprod', $producto->codprod)->get();
+        if($prodsucursal)
+            foreach ($prodsucursal as $item){
+                if($item->producto->comercial == $match)
+                    $item->delete();
+            }
 
         return response()->json([
             'success' => true,
