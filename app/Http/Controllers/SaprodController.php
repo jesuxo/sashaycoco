@@ -1228,9 +1228,15 @@ class SaprodController extends Controller
     {
         $data = $this->getAttributes();
 
-        // Agregar la URL de la imagen
-        $data['imagen_url'] = !empty($this->imagen)
-            ? asset('productos/' . $this->imagen)
+        $imagenes = $this->imagenes()->get();
+
+        $principal = $this->imagenPrincipal;
+        if ($principal) {
+            $principal->url = asset($principal->ruta);
+        }
+
+        $data['imagen_url'] = !empty($principal->url)
+            ? $principal->url
             : null;
 
 
