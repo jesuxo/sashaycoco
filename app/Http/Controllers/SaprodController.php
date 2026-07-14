@@ -1224,25 +1224,6 @@ class SaprodController extends Controller
         }
     }
 
-    public function toApiArray()
-    {
-        $data = $this->getAttributes();
-
-        $imagenes = $this->imagenes()->get();
-
-        $principal = $this->imagenPrincipal;
-        if ($principal) {
-            $principal->url = asset($principal->ruta);
-        }
-
-        $data['imagen_url'] = !empty($principal->url)
-            ? $principal->url
-            : null;
-
-
-        return $data;
-    }
-
     public function list(Request $request)
     {
         $sucursalid = str_replace("300","",$request->sucursal);

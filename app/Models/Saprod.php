@@ -46,6 +46,24 @@ class Saprod extends Model
             ->orderBy('orden', 'asc');
     }
 
+    public function toApiArray()
+    {
+        $data = $this->getAttributes();
+
+        $imagenes = $this->imagenes()->get();
+
+        $principal = $this->imagenPrincipal;
+        if ($principal) {
+            $principal->url = asset($principal->ruta);
+        }
+
+        $data['imagen_url'] = !empty($principal->url)
+            ? $principal->url
+            : null;
+
+        return $data;
+    }
+
     public function imagenPrincipal()
     {
         return $this->hasOne(SaprodImagen::class, 'codprod', 'codprod')
