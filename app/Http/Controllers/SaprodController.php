@@ -1224,18 +1224,35 @@ class SaprodController extends Controller
         }
     }
 
+    public function toApiArray()
+    {
+        $data = $this->getAttributes();
+
+        // Agregar la URL de la imagen
+        $data['imagen_url'] = !empty($this->imagen)
+            ? asset('productos/' . $this->imagen)
+            : null;
+
+
+        return $data;
+    }
+
     public function list(Request $request)
     {
         $sucursalid = str_replace("300","",$request->sucursal);
         $sucursal   = Sasucursal::find($sucursalid);
         $comercial  = $sucursal->fk_comercial;
 
+        $servicios = Saserv::whereRaw("codserv not in (select codserv from saservsucursal where fk_sucursal=$sucursalid )")->get()->take(10);
+
         $productos = Saprod::where('comercial',$comercial)
             ->whereRaw("codprod not in (select codprod from saprodsucursal where fk_sucursal=$sucursalid )")->limit(1000)->get();
 
-        $servicios = Saserv::whereRaw("codserv not in (select codserv from saservsucursal where fk_sucursal=$sucursalid )")->get()->take(10);
+        $productosConImagen = $productos->map(function($producto) {
+            return $producto->toApiArray();
+        });
 
-        return response()->json(['success'=>'success', 'newproductos' => $productos, 'newservicios' => $servicios]);
+        return response()->json(['success'=>'success', 'newproductos' => $productosConImagen, 'newservicios' => $servicios]);
     }
 
     public function productosinstsancias(Request $request)
