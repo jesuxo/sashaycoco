@@ -170,21 +170,24 @@ class SaprodImagenController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'errors' => $validator->errors()
+                'errors'  => $validator->errors()
             ], 422);
         }
 
-        $comercial = session('comercialid');
+        $comercialid = session('comercialid') ;
+
+        $comercial   = Sacomercial::find($comercialid);
+        $match       = $comercial->match;
         $codprod = $request->codprod;
 
         $producto = Saprod::where('codprod', $codprod)
-            ->where('comercial', $comercial)
+            ->where('comercial', $comercialid)
             ->first();
 
         if (!$producto) {
             return response()->json([
                 'success' => false,
-                'error' => 'Producto no encontrado'
+                'error'   => 'Producto no encontrado'
             ], 404);
         }
 
@@ -208,7 +211,7 @@ class SaprodImagenController extends Controller
 
                 $imagenModel = SaprodImagen::create([
                     'codprod' => $codprod,
-                    'comercial' => $comercial,
+                    'comercial' => $comercialid,
                     'nombre_original' => $nombreOriginal,
                     'nombre_archivo' => $nombreArchivo,
                     'ruta' => $this->uploadPath . '/' . $nombreArchivo,
@@ -224,11 +227,18 @@ class SaprodImagenController extends Controller
             }
         }
 
+        $prodsucursal = Saprodsucursal::with('producto')->where('codprod', $producto->codprod)->get();
+        if($prodsucursal)
+            foreach ($prodsucursal as $item){
+                if($item->producto->comercial == $match)
+                    $item->delete();
+            }
+
         return response()->json([
-            'success' => count($imagenesSubidas) > 0,
-            'message' => count($imagenesSubidas) . ' imágenes subidas correctamente',
+            'success'  => count($imagenesSubidas) > 0,
+            'message'  => count($imagenesSubidas) . ' imágenes subidas correctamente',
             'imagenes' => $imagenesSubidas,
-            'errores' => $errores
+            'errores'  => $errores
         ]);
     }
 
