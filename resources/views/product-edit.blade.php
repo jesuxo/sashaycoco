@@ -245,16 +245,7 @@
                 <div class="card"  >
                     <div class="card-header">
                         @if(Auth::user() and ( auth()->user()->can('products_cots')   )  )
-                            <div class="d-flex justify-content-between">
-                                <label class="form-label" for="preciod">Costo anterior</label>
-                                <input type="text" class="form-control" id="preciodant" value="{{$producto->preciodant}}"  name="preciodant"
-                                       placeholder="Ej: 15" required style="width: 70px">
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <label class="form-label" for="preciod">Costo promedio</label>
-                                <input type="text" class="form-control" id="preciodpro" value="{{$producto->preciodpro}}"  name="preciodpro"
-                                       placeholder="Ej: 15" required style="width: 70px">
-                            </div>
+
                             <div class="d-flex justify-content-between">
                                 <label class="form-label" for="preciod">Costo</label>
                                 <input type="text" class="form-control" id="preciod" value="{{$producto->preciod}}"  name="preciod"
@@ -262,16 +253,9 @@
                             </div>
                         @endif
                         @if(Auth::user() and ( auth()->user()->can('products_cots_view')   )  and !( auth()->user()->can('products_cots')   )  )
+
                                 <div class="d-flex justify-content-between">
-                                   <label class="form-label" for="">Costo anterior: </label>
-                                   <div>{{$producto->preciodant}}</div>
-                                </div>
-                                <div class="d-flex justify-content-between">
-                                   <label class="form-label" for="">Costo promedio: </label>
-                                   <div> {{$producto->preciodpro}}</div>
-                                </div>
-                                <div class="d-flex justify-content-between">
-                                    <label class="form-label" for="" >Costo actual: </label>
+                                    <label class="form-label" for="" >Costo: </label>
                                     <div>{{$producto->preciod}}</div>
                                 </div>
                         @endif

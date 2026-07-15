@@ -89,8 +89,6 @@ class SacompController extends Controller
                                     $saprod->costod3    = (isset($allitem->costod3))?   $allitem->costod3   : 0;
                                     $saprod->preciod    = (isset($allitem->preciod))?   $allitem->preciod   : 0;
                                  //   $saprod->preciod2   = (isset($allitem->preciod2))?  $allitem->preciod2  : 0;
-                                    $saprod->preciodant = (isset($allitem->preciodant))?$allitem->preciodant: 0;
-                                    $saprod->preciodpro = (isset($allitem->preciodpro))?$allitem->preciodpro: 0;
                                     $saprod->save();
 
                                     foreach($allsucursales as $current){

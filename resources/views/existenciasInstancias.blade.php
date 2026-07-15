@@ -244,7 +244,7 @@
                                             $sqlcostoinv = "
                                                 SELECT d.descrip, d.id,
                                                     SUM(c.Existen) AS existen,
-                                                    SUM(a.preciodpro * c.Existen) AS preciodpro
+                                                    SUM(a.preciod * c.Existen) AS preciod
                                                 FROM saprod a
                                                 INNER JOIN sainsta b ON a.CodInst = b.CodInst
                                                     AND b.tipoins = 0
@@ -263,11 +263,11 @@
                                             @php
                                                 $sucursalesConStock++;
                                                 $tunidades += $costoinven[0]->existen;
-                                                $tcosto += $costoinven[0]->preciodpro;
+                                                $tcosto += $costoinven[0]->preciod;
                                                 $sucursalesData[] = [
                                                     'nombre' => $sucursal->descrip,
                                                     'existen' => $costoinven[0]->existen,
-                                                    'preciodpro' => $costoinven[0]->preciodpro
+                                                    'preciod' => $costoinven[0]->preciod
                                                 ];
                                             @endphp
                                         @endif
@@ -293,7 +293,7 @@
                                                     </td>
                                                     <td class="text-end">
                                                         <span class="badge bg-success">
-                                                            ${{ number_format($sucursal['preciodpro'], 2, ',', '.') }}
+                                                            ${{ number_format($sucursal['preciod'], 2, ',', '.') }}
                                                         </span>
                                                     </td>
                                                 </tr>
@@ -367,9 +367,9 @@
                                                 'nivel'      => $inst->nivel,
                                                 'insPadre'   => $inst->insPadre,
                                                 'existen'    => 0,
-                                                'preciodpro' => 0,
-                                                'tieneHijosDirectos' => false,
-                                                'tieneStockPropio' => false,
+                                                'preciod'    => 0,
+                                                'tieneHijosDirectos'      => false,
+                                                'tieneStockPropio'        => false,
                                                 'tieneStockDescendientes' => false
                                             ];
 
@@ -388,7 +388,7 @@
                                             $sqlcostoinv = "
                                                 SELECT
                                                     COALESCE(SUM(c.Existen), 0) AS existen,
-                                                    COALESCE(SUM(a.preciodpro * c.Existen), 0) AS preciodpro
+                                                    COALESCE(SUM(a.preciod * c.Existen), 0) AS preciod
                                                 FROM saprod a
                                                 INNER JOIN sainsta b ON a.CodInst = b.CodInst
                                                     AND b.tipoins = 0
@@ -403,11 +403,11 @@
 
                                             if(isset($costoinven[0])) {
                                                 $stockDirecto = $costoinven[0]->existen;
-                                                $costoDirecto = $costoinven[0]->preciodpro;
+                                                $costoDirecto = $costoinven[0]->preciod;
                                             }
 
                                             $instanciasInfo[$codinst]['existen'] = $stockDirecto;
-                                            $instanciasInfo[$codinst]['preciodpro'] = $costoDirecto;
+                                            $instanciasInfo[$codinst]['preciod'] = $costoDirecto;
                                             $instanciasInfo[$codinst]['tieneStockPropio'] = ($stockDirecto > 0);
 
                                             // Si tiene hijos, sumar su stock recursivamente
@@ -418,12 +418,12 @@
                                                 foreach($instanciasPorPadre[$codinst] as $hijoCodinst) {
                                                     $stockHijo = calcularStockTotal($hijoCodinst, $instanciasInfo, $instanciasPorPadre, $datasucu, $comercialid);
                                                     $stockTotal += $instanciasInfo[$hijoCodinst]['existen_total'] ?? 0;
-                                                    $costoTotal += $instanciasInfo[$hijoCodinst]['preciodpro_total'] ?? 0;
+                                                    $costoTotal += $instanciasInfo[$hijoCodinst]['preciod_total'] ?? 0;
                                                 }
                                             }
 
                                             $instanciasInfo[$codinst]['existen_total'] = $stockTotal;
-                                            $instanciasInfo[$codinst]['preciodpro_total'] = $costoTotal;
+                                            $instanciasInfo[$codinst]['preciod_total'] = $costoTotal;
                                             $instanciasInfo[$codinst]['tieneStockDescendientes'] = ($stockTotal > 0);
 
                                             return $stockTotal;
@@ -453,7 +453,7 @@
                                                 // Sumar a los totales de padres solo el stock de categorías raíz
                                                 if($info['insPadre'] == 0) {
                                                     $tunidadesPadre += $info['existen_total'];
-                                                    $tcostoPadre += $info['preciodpro_total'];
+                                                    $tcostoPadre += $info['preciod_total'];
                                                 }
                                             }
                                         }
@@ -502,7 +502,7 @@
 
                                                         // Mostrar el total (directo + indirecto)
                                                         $totalExisten = $inst['existen_total'];
-                                                        $totalCosto = $inst['preciodpro_total'];
+                                                        $totalCosto = $inst['preciod_total'];
                                                         $hasStock = $totalExisten > 0;
 
                                                         // Stock directo (para información)

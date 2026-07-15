@@ -53,7 +53,7 @@
                     </div>
                 </td>
                 <td class="text-end align-middle">
-                    ${{ number_format($producto->preciodpro, 2, ',', '.') }}
+                    ${{ number_format($producto->preciod, 2, ',', '.') }}
                 </td>
                 <td class="text-end align-middle">
                     ${{ number_format($producto->costod3, 2, ',', '.') }}

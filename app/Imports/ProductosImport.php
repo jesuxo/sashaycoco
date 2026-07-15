@@ -117,7 +117,6 @@ class ProductosImport implements ToCollection, WithHeadingRow, WithChunkReading
                         $producto->codinst    = $instancia->codinst;
                         $producto->unidad     = substr($row['unidad'],0,3) ?? null;
                         $producto->preciod    = floatval($row['costo'] ?? 0);
-                        $producto->preciodpro = floatval($row['costo'] ?? 0);
                         $producto->costod     = floatval($row['precio_venta'] ?? 0);
                         $producto->costod2    = floatval($row['precio_venta'] ?? 0);
                         $producto->costod3    = floatval($row['precio_venta'] ?? 0);

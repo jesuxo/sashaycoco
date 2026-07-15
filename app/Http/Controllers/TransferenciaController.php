@@ -144,8 +144,8 @@ class TransferenciaController extends Controller
                         'cantidad' => $item->cantidad,
                         'fk_sucursal_origen' => $item->fk_sucursal_origen,
                         'fk_sucursal_destino' => $item->fk_sucursal_destino,
-                        'precio_unitario' => $item->producto->preciodpro ?? 0,
-                        'costo_unitario' => $item->producto->costod ?? 0,
+                        'precio_unitario' => $item->producto->costod ?? 0,
+                        'costo_unitario' => $item->producto->preciod ?? 0,
                         'observaciones' => $request->observaciones_item ?? ''
                     ]);
                 }
@@ -173,8 +173,8 @@ class TransferenciaController extends Controller
                         'cantidad' => $item->cantidad,
                         'fk_sucursal_origen' => $item->fk_sucursal_origen,
                         'fk_sucursal_destino' => $item->fk_sucursal_destino,
-                        'precio_unitario' => $item->producto->preciodpro ?? 0,
-                        'costo_unitario' => $item->producto->costod ?? 0,
+                        'precio_unitario' => $item->producto->costod ?? 0,
+                        'costo_unitario' => $item->producto->preciod ?? 0,
                         'observaciones' => $request->observaciones_item ?? ''
                     ]);
                 }

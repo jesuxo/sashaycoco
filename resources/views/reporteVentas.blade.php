@@ -202,11 +202,11 @@
                                             $totalcant       += $listavend['cant'];
                                             $tprecioventa    += $listavend['precioventa'];
                                             $tbasesuma       += $listavend['basesuma'];
-                                            $costoxcantidad  += $listavend['preciodpro'];
+                                            $costoxcantidad  += $listavend['preciod'];
                                             $restaxcantidad  += $listavend['resta'];
                                             $utilidad         = 0;
-                                            if($listavend['preciodpro'] != 0 and $listavend['preciodpro']  >0 )
-                                                $utilidad = $listavend['resta'] / $listavend['preciodpro'];
+                                            if($listavend['preciod'] != 0 and $listavend['preciod']  >0 )
+                                                $utilidad = $listavend['resta'] / $listavend['preciod'];
 
                                             $sumautilidad  += $utilidad*100
 
@@ -218,7 +218,7 @@
                                                 <td align="center" class="tdline"  style=" background-color:#ddd"> {{number_format($listavend['cant'],0,',','.')}}</td>
                                                 <td align="right"  class="tdline"  >{{number_format($listavend['precioventa'],2,',','.')}}</td>
                                                 <td align="right"  class="tdline"  > {{number_format($listavend['basesuma'],2,',','.')}}</td>
-                                                <td align="right"  class="tdline"  > {{number_format($listavend['preciodpro'],2,',','.')}} </td>
+                                                <td align="right"  class="tdline"  > {{number_format($listavend['preciod'],2,',','.')}} </td>
                                                 <td align="right"  class="tdline"  > {{number_format($listavend['resta'],2,',','.')}}   </td>
                                                 <td align="right"  class="tdline"  > {{number_format($utilidad*100,2,',','.')}} % </td>
                                             </tr>

@@ -201,7 +201,7 @@
                                             $sqlcostoinv = "
                                                 SELECT d.descrip, d.id,
                                                     SUM(c.Existen) AS existen,
-                                                    SUM(a.preciodpro * c.Existen) AS preciodpro
+                                                    SUM(a.preciod * c.Existen) AS preciod
                                                 FROM saprod a
                                                 INNER JOIN sainsta b ON a.CodInst = b.CodInst
                                                     AND b.tipoins = 0
@@ -220,11 +220,11 @@
                                             @php
                                                 $sucursalesConStock++;
                                                 $tunidades += $costoinven[0]->existen;
-                                                $tcosto += $costoinven[0]->preciodpro;
+                                                $tcosto += $costoinven[0]->preciod;
                                                 $sucursalesData[] = [
-                                                    'nombre' => $sucursal->descrip,
+                                                    'nombre'  => $sucursal->descrip,
                                                     'existen' => $costoinven[0]->existen,
-                                                    'preciodpro' => $costoinven[0]->preciodpro
+                                                    'preciod' => $costoinven[0]->preciod
                                                 ];
                                             @endphp
                                         @endif
@@ -250,7 +250,7 @@
                                                     </td>
                                                     <td class="text-end">
                                                             <span class="badge bg-success">
-                                                                ${{ number_format($sucursal['preciodpro'], 2, ',', '.') }}
+                                                                ${{ number_format($sucursal['preciod'], 2, ',', '.') }}
                                                             </span>
                                                     </td>
                                                 </tr>
@@ -320,7 +320,7 @@
                                                 SELECT
                                                     LEFT(b.codalte, $len) AS codigo_prefijo,
                                                     SUM(c.Existen) AS existen,
-                                                    SUM(a.preciodpro * c.Existen) AS preciodpro
+                                                    SUM(a.preciod * c.Existen) AS preciod
                                                 FROM saprod a
                                                 INNER JOIN sainsta b ON a.CodInst = b.CodInst
                                                     AND b.tipoins = 0
@@ -337,19 +337,19 @@
                                             if(isset($costoinven[0]) && $costoinven[0]->existen != 0) {
                                                 $instanciasConStock++;
                                                 $instanciasInfo[$inst->codinst] = [
-                                                    'codinst' => $inst->codinst,
-                                                    'codalte' => $codalte,
-                                                    'label' => $inst->label,
-                                                    'descrip' => $inst->descrip,
-                                                    'nivel' => $inst->nivel,
+                                                    'codinst'  => $inst->codinst,
+                                                    'codalte'  => $codalte,
+                                                    'label'    => $inst->label,
+                                                    'descrip'  => $inst->descrip,
+                                                    'nivel'    => $inst->nivel,
                                                     'insPadre' => $inst->insPadre,
-                                                    'existen' => $costoinven[0]->existen,
-                                                    'preciodpro' => $costoinven[0]->preciodpro
+                                                    'existen'  => $costoinven[0]->existen,
+                                                    'preciod'  => $costoinven[0]->preciod
                                                 ];
 
                                                 if($inst->insPadre == 0) {
                                                     $tunidadesInst += $costoinven[0]->existen;
-                                                    $tcostoInst += $costoinven[0]->preciodpro;
+                                                    $tcostoInst += $costoinven[0]->preciod;
                                                 }
 
                                                 if(!isset($instanciasPorPadre[$inst->insPadre])) {
@@ -409,8 +409,8 @@
                                                         }
                                                         $html .= '</td>';
                                                         $html .= '<td class="text-end">';
-                                                        if($inst['preciodpro'] > 0) {
-                                                            $html .= '<span class="badge bg-success">$' . number_format($inst['preciodpro'], 2, ',', '.') . '</span>';
+                                                        if($inst['preciod'] > 0) {
+                                                            $html .= '<span class="badge bg-success">$' . number_format($inst['preciod'], 2, ',', '.') . '</span>';
                                                         } else {
                                                             $html .= '<span class="badge bg-secondary">$0,00</span>';
                                                         }

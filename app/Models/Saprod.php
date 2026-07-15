@@ -13,7 +13,7 @@ class Saprod extends Model
     protected $fillable = ['codprod','descrip','descrip2','descrip3',
                           'marca','refere','codinst','observaciones','activo',
                           'esexento','exdecimal','cantxempaq','volumen','peso','unidad',
-                          'preciod','preciodant','preciodpro','preciod2','costod','costod2','costod3'];
+                          'preciod',  'preciod2','costod','costod2','costod3'];
 
     public function instancia(){
         $comercial = session('comercialid') ;

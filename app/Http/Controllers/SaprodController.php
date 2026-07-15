@@ -227,7 +227,7 @@ class SaprodController extends Controller
                                 'excedente_disponible' => (int) $excedenteMaximo,
                                 'cantidad_sugerida' => (int) $cantidadTransferir,
                                 'ventas_periodo_destino' => (int) $ventasDestino,
-                                'precio' => (float) $producto->preciodpro,
+                                'precio' => (float) $producto->preciod,
                                 'costo' => (float) $producto->costod
                             ];
                         }
@@ -879,7 +879,7 @@ class SaprodController extends Controller
             $datainst .= " and codalte like '$codalte%' ";
 
         $datos = Saitemfac::whereRaw("TipoFac in ('A','B')")
-            ->selectRaw("fk_sucursal, CodItem, SUM(Cantidad*Signo) as salidas, SUM(Cantidad*costodoriginal*Signo) as costod, SUM(Cantidad*preciod*Signo) as preciodpro")
+            ->selectRaw("fk_sucursal, CodItem, SUM(Cantidad*Signo) as salidas, SUM(Cantidad*costodoriginal*Signo) as costod, SUM(Cantidad*preciod*Signo) as preciod")
             ->with(['sucursal', 'producto.instancia' => function($q) use($datainst) {
                 if($datainst != ''){
                     $q->whereRaw($datainst);
@@ -945,7 +945,7 @@ class SaprodController extends Controller
 
                     $cantidadprod[$prodsuc->CodItem . $prodsuc->sucursal->id] += $prodsuc->salidas;
                     $costodprod  [$prodsuc->CodItem . $prodsuc->sucursal->id] += $prodsuc->costod;
-                    $preciodprod [$prodsuc->CodItem . $prodsuc->sucursal->id] += $prodsuc->preciodpro;
+                    $preciodprod [$prodsuc->CodItem . $prodsuc->sucursal->id] += $prodsuc->preciod;
                 }
             }
 
@@ -976,7 +976,7 @@ class SaprodController extends Controller
 
                     $cantidadprod[$prodsuc->CodItem] += $prodsuc->salidas;
                     $costodprod  [$prodsuc->CodItem] += $prodsuc->costod;
-                    $preciodprod [$prodsuc->CodItem] += $prodsuc->preciodpro;
+                    $preciodprod [$prodsuc->CodItem] += $prodsuc->preciod;
                 }
             }
 
@@ -1249,7 +1249,7 @@ class SaprodController extends Controller
         $comercialid = $sucursal->fk_comercial;
         $codinst     = $request->codinst;
 
-        $sqlcostoinv = "SELECT a.preciodant, a.preciodpro, a.descrip, a.codprod, e.codubic, b.existen, e.descrip as deposito
+        $sqlcostoinv = "SELECT a.preciodant, a.preciod, a.descrip, a.codprod, e.codubic, b.existen, e.descrip as deposito
 								from   saprod a , saexis b, sasucursal c, sainsta d, sadepo e
 								where  a.codprod = b.codprod
                                 and b.fk_sucursal = c.id
@@ -1276,7 +1276,7 @@ class SaprodController extends Controller
         $codalte     = $request->codalte;
         $len         = strlen($codalte);
 
-        $sqlcostoinv = "SELECT a.preciodant, a.preciodpro, a.preciod, a.descrip, a.codprod, e.codubic, b.existen, e.descrip as deposito
+        $sqlcostoinv = "SELECT a.preciodant, a.preciod, a.preciod, a.descrip, a.codprod, e.codubic, b.existen, e.descrip as deposito
 								from   saprod a , saexis b, sasucursal c, sainsta d, sadepo e
 								where  a.codprod = b.codprod
                                 and b.fk_sucursal = c.id
@@ -1329,7 +1329,7 @@ class SaprodController extends Controller
 
         if($cadena!='') $cadena = " and ($cadena) ";
 
-        $sqlcostoinv = "SELECT a.preciodant, a.preciodpro, a.preciod, a.descrip, a.codprod, e.codubic, b.existen, e.descrip as deposito
+        $sqlcostoinv = "SELECT a.preciodant,  a.preciod, a.descrip, a.codprod, e.codubic, b.existen, e.descrip as deposito
 								from saprod a , saexis b, sasucursal c, sainsta d, sadepo e
 								where a.codprod    = b.codprod
                                 and b.fk_sucursal  = c.id
@@ -1357,7 +1357,6 @@ class SaprodController extends Controller
                 $productos[$producto->codprod] = [];
 
             $productos[$producto->codprod]['descrip']    = $producto->descrip;
-            $productos[$producto->codprod]['preciodpro'] = $producto->preciodpro;
             $productos[$producto->codprod]['preciod']    = $producto->preciod;
 
             if(!isset($deposito[$producto->codubic]))
@@ -1513,11 +1512,7 @@ class SaprodController extends Controller
                 $newprod->fill($request->all());
                 $newprod->codprod   = substr($request->codprod,0,15);
 
-                if(isset($request->preciodpro) and $request->preciodpro >0) {
-                    $newprod->preciodant  = 0;
-                    $newprod->preciod     = $request->preciodpro;
-                    $newprod->preciodpro  = $request->preciodpro;
-                }
+
                 if(isset($request->costod3) and $request->costod3 >0) {
                     $newprod->costod  = $request->costod3;
                     $newprod->costod2 = $request->costod3;
@@ -1583,34 +1578,6 @@ class SaprodController extends Controller
             if ($coma > 0 and !$punto)
                 $preciod = str_replace(",", '.', $preciod);
             $producto->preciod = $preciod;
-        }
-        /////////////////////////////////////////////
-        if(isset($request->preciodpro)) {
-            $preciodpro = $request->preciodpro;
-            $coma = substr_count($preciodpro, ',');
-            $punto = substr_count($preciodpro, '.');
-
-            if ($coma > 0 and $punto > 0) {
-                $preciodpro = str_replace(".", '', $preciodpro);
-                $preciodpro = str_replace(",", '.', $preciodpro);
-            }
-            if ($coma > 0 and !$punto)
-                $preciodpro = str_replace(",", '.', $preciodpro);
-            $producto->preciodpro = $preciodpro;
-        }
-        /////////////////////////////////////////////
-        if(isset($request->preciodant)) {
-            $preciodant = $request->preciodant;
-            $coma = substr_count($preciodant, ',');
-            $punto = substr_count($preciodant, '.');
-
-            if ($coma > 0 and $punto > 0) {
-                $preciodant = str_replace(".", '', $preciodant);
-                $preciodant = str_replace(",", '.', $preciodant);
-            }
-            if ($coma > 0 and !$punto)
-                $preciodant = str_replace(",", '.', $preciodant);
-            $producto->preciodant = $preciodant;
         }
         ////////////////////////////////////////////////////////////////////////////
         if(isset($request->costod) ) {
@@ -1702,7 +1669,6 @@ class SaprodController extends Controller
                 $newprod->fill($request->all());
                 $newprod->codprod   = $codprod;
                 $newprod->preciod   = 0;
-                $newprod->preciodpro= 0;
                 $newprod->costod    =  0;
                 if($comercial->id == 1 or $comercial->id == 2 or $comercial->id == 3){  $newprod->esexento = 1; }else{$newprod->esexento = 0;}
                 $newprod->costod2   =  0;

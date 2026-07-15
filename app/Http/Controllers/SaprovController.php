@@ -605,7 +605,7 @@ class SaprovController extends Controller
         // Valor total del inventario
         $valor_inventario = Saprod::whereIn('codprod', $codigos_productos)
             ->where('comercial', $comercial)
-            ->select(DB::raw('SUM(existen * preciodpro) as total'))
+            ->select(DB::raw('SUM(existen * preciod) as total'))
             ->value('total') ?? 0;
 
         // Existencia total

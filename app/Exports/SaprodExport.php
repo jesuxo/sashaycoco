@@ -38,7 +38,7 @@ class SaprodExport implements FromCollection, WithHeadings
         $codalte    = $this->codalte;
 
         return Saprod::selectRaw("
-        codprod,descrip,costod as precio1, costod2 as precio2, costod3 as precio3, preciod as costo, preciodpro as costopro,
+        codprod,descrip,costod as precio1, costod2 as precio2, costod3 as precio3, preciod as costo,
         refere as referencia, marca,  existen, codinst  ")
             ->where("comercial",$comercial)
             ->whereRaw(" codinst in (select codinst from sainsta where codalte like '$codalte%')")

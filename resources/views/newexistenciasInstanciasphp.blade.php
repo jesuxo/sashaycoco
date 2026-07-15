@@ -29,7 +29,7 @@
                             $sqlcostoinv = "
                                 SELECT
                                     SUM(c.Existen) AS existen,
-                                    SUM(a.preciodpro * c.Existen) AS preciodpro
+                                    SUM(a.preciod * c.Existen) AS preciod
                                 FROM saprod a
                                 INNER JOIN sainsta b ON a.CodInst = b.CodInst AND b.tipoins = 0 AND b.comercial = $comercial AND b.codalte like '$codalte%'
                                 INNER JOIN saexis c ON a.codprod = c.codprod AND c.fk_sucursal = $fk_sucursal
@@ -41,12 +41,12 @@
                         @if(isset($costoinven[0]) && $costoinven[0]->existen > 0)
                             @php
                                 $totalUnidades += $costoinven[0]->existen;
-                                $totalCosto += $costoinven[0]->preciodpro;
+                                $totalCosto += $costoinven[0]->preciod;
                             @endphp
                             <tr>
                                 <td class="fw-medium">{{ $sucursal->descrip }}</td>
                                 <td class="text-end">{{ number_format($costoinven[0]->existen, 0, ',', '.') }}</td>
-                                <td class="text-end">${{ number_format($costoinven[0]->preciodpro, 2, ',', '.') }}</td>
+                                <td class="text-end">${{ number_format($costoinven[0]->preciod, 2, ',', '.') }}</td>
                             </tr>
                         @endif
                     @endforeach
@@ -91,12 +91,12 @@
                             // Cuando hay una sucursal seleccionada, consulta directa a la BD
                             $codalte = $instanciaselected->codalte;
                             $sqlcostoinv = "
-                                SELECT a.id, a.codprod, a.descrip, a.preciodpro, SUM(c.Existen) AS existen
+                                SELECT a.id, a.codprod, a.descrip, a.preciod, SUM(c.Existen) AS existen
                                 FROM saprod a
                                 INNER JOIN sainsta b ON a.CodInst = b.CodInst AND b.tipoins = 0 AND b.comercial = $comercial AND b.codalte like '$codalte%'
-                                INNER JOIN saexis c ON a.codprod = c.codprod AND c.existen > 0 $datasucu 
+                                INNER JOIN saexis c ON a.codprod = c.codprod AND c.existen > 0 $datasucu
                                 WHERE a.comercial = $comercial
-                                GROUP BY a.id, a.codprod, a.descrip, a.preciodpro
+                                GROUP BY a.id, a.codprod, a.descrip, a.preciod
                                 ORDER BY a.descrip
                             ";
                             $productosDB = \Illuminate\Support\Facades\DB::select($sqlcostoinv);
@@ -107,7 +107,7 @@
                                     'id' => $prod->id,
                                     'codprod' => $prod->codprod,
                                     'descrip' => $prod->descrip,
-                                    'preciodpro' => $prod->preciodpro,
+                                    'preciod' => $prod->preciod,
                                     'existen' => $prod->existen
                                 ]);
                             }
@@ -122,10 +122,10 @@
                                 {{ number_format($producto['existen'], 0, ',', '.') }}
                             </td>
                             <td class="text-end">
-                                ${{ number_format($producto['preciodpro'], 2, ',', '.') }}
+                                ${{ number_format($producto['preciod'], 2, ',', '.') }}
                             </td>
                             <td class="text-end">
-                                ${{ number_format($producto['preciodpro'] * $producto['existen'], 2, ',', '.') }}
+                                ${{ number_format($producto['preciod'] * $producto['existen'], 2, ',', '.') }}
                             </td>
                             <td class="text-center">
                                 <button type="button"

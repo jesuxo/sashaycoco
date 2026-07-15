@@ -41,10 +41,8 @@ class SaopeiController extends Controller
                                 $newitem->save();
 
                                 $saprod   = Saprod::where(['codprod'=>  $allitem->CodItem, 'comercial'=> $sucursal->fk_comercial])->first();
-                                if(isset($saprod) and isset($saprod->codprod) and isset($allitem->preciodpro) and $allitem->preciodpro >0){
+                                if(isset($saprod) and isset($saprod->codprod) and isset($allitem->preciod) and $allitem->preciod >0){
                                     $saprod->preciod    = (isset($allitem->preciod))?   $allitem->preciod   : 0;
-                                    $saprod->preciodant = (isset($allitem->preciodant))?$allitem->preciodant: 0;
-                                    $saprod->preciodpro = (isset($allitem->preciodpro))?$allitem->preciodpro: 0;
                                     $saprod->save();
                                 }
                                 foreach($allsucursales as $current){

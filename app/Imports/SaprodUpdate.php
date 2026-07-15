@@ -23,7 +23,6 @@ class SaprodUpdate implements ToCollection, WithHeadingRow
             if($saprod){
                 $saprod->activo = 1;
                 if(isset($row['costo'])     and $row['costo']   > 0 )  $saprod->preciod    = $row['costo'];
-                if(isset($row['costopro'])  and $row['costopro']> 0 )  $saprod->preciodpro = $row['costopro'];
                 if(isset($row['precio1'])   and $row['precio1'] > 0 )  $saprod->costod     = $row['precio1'];
                 if(isset($row['precio2'])   and $row['precio2'] > 0 )  $saprod->costod2    = $row['precio2'];
                 if(isset($row['precio3'])   and $row['precio3'] > 0 )  $saprod->costod3    = $row['precio3'];

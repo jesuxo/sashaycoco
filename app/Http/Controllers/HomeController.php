@@ -112,7 +112,7 @@ class HomeController extends Controller
                 DB::raw('(b.costodoriginal * b.cantidad * f.signo) as precioventa'),
                 'a.descrip',
                 DB::raw('(b.Cantidad*f.signo) as cant'),
-                DB::raw('(b.Cantidad*(b.preciod)*f.signo) as preciodpro'),
+                DB::raw('(b.Cantidad*(b.preciod)*f.signo) as preciod'),
                 DB::raw('(((b.costodoriginal - b.preciod) * f.signo) * b.cantidad) as resta'),
                 DB::raw('(((b.costodoriginal - b.preciod)/b.costodoriginal) * f.signo * b.cantidad) as utilidad'),
                 DB::raw('((b.costodoriginal) * f.signo * b.cantidad) as basesuma'),
@@ -250,8 +250,8 @@ class HomeController extends Controller
                             $arrayinsta[$instancia->codinst]['cant'] = 0;
                         if(!isset($arrayinsta[$instancia->codinst]['resta']))
                             $arrayinsta[$instancia->codinst]['resta'] = 0;
-                        if(!isset($arrayinsta[$instancia->codinst]['preciodpro']))
-                            $arrayinsta[$instancia->codinst]['preciodpro'] = 0;
+                        if(!isset($arrayinsta[$instancia->codinst]['preciod']))
+                            $arrayinsta[$instancia->codinst]['preciod'] = 0;
                         if(!isset($arrayinsta[$instancia->codinst]['basesuma']))
                             $arrayinsta[$instancia->codinst]['basesuma'] = 0;
                         if(!isset($arrayinsta[$instancia->codinst]['precioventa']))
@@ -259,7 +259,7 @@ class HomeController extends Controller
 
                         $arrayinsta[$instancia->codinst]['cant']        += $venta->cant;
                         $arrayinsta[$instancia->codinst]['resta']       += $venta->resta;
-                        $arrayinsta[$instancia->codinst]['preciodpro']  += $venta->preciodpro;
+                        $arrayinsta[$instancia->codinst]['preciod']  += $venta->preciod;
                         $arrayinsta[$instancia->codinst]['basesuma']    += $venta->basesuma;
                         $arrayinsta[$instancia->codinst]['precioventa'] += $venta->precioventa;
                     }
