@@ -4,7 +4,7 @@
         <tr>
             <th width="5%" class="text-center">Código</th>
             <th width="40%" class="text-center">Producto</th>
-            <th width="8%" class="text-center">CostoPro </th>
+            <th width="8%" class="text-center">Costo </th>
             <th width="8%" class="text-center">Precio3</th>
             <th width="25%" class="text-center">Existencias por Sucursal</th>
             <th width="5%" class="text-center">Total</th>

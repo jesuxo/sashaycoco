@@ -24,7 +24,6 @@ class SaprodExport implements FromCollection, WithHeadings
             'precio2',
             'precio3',
             'costo',
-            'costopro',
             'referencia',
             'marca',
             'existencia',

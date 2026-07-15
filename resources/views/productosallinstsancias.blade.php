@@ -25,12 +25,12 @@
                         <tr>
                             <td width="4%" height="30" align="center" class="titulo tdlineff  "> COD</td>
                             <td width="20%" align="center" class="titulo tdlineff  "> PRODUCTO  </td>
-                            <td width="9%"  align="center" class="titulo tdlineff  "> COSTO PRO</td>
+                            <td width="9%"  align="center" class="titulo tdlineff  "> COSTO </td>
                             @foreach($deposito as $indexdep => $descripdepo)
                                 <td width="13%"  align="center" class="titulo tdlineff   "> {{ $descripdepo }}</td>
                             @endforeach
                             <td width="9%"  align="center" class="titulo tdlineff  "> Unds</td>
-                            <td width="9%"  align="center" class="titulo tdlineff  "> COSTO PRO* Unds</td>
+                            <td width="9%"  align="center" class="titulo tdlineff  "> COSTO * Unds</td>
                         </tr>
                         </thead>
                         <tbody>
