@@ -263,17 +263,17 @@
                         @if(Auth::user() and (  auth()->user()->can('products_prices')  )  )
                                 <div class="d-flex justify-content-between">
                                     <label class="form-label" for="costod">Precio1</label>
-                                    <input type="text" class="form-control" id="costod" value="{{$producto->costod}}" name="costod"
+                                    <input type="text" class="form-control" id="costod" value="{{(isset($producto->costod))? $producto->costod : 0}}" name="costod"
                                            placeholder="Ej: 18" style="width: 70px">
                                 </div>
                                 <div class="d-flex justify-content-between">
                                     <label class="form-label" for="costod2">Precio2</label>
-                                    <input type="text" class="form-control" id="costod2" value="{{$producto->costod2}}"name="costod2"
+                                    <input type="text" class="form-control" id="costod2" value="{{(isset($producto->costod2))? $producto->costod2 : 0}}"name="costod2"
                                            placeholder="Ej: 20" style="width: 70px">
                                 </div>
                                 <div class="d-flex justify-content-between">
                                     <label class="form-label" for="costod3">Precio3</label>
-                                    <input type="text" class="form-control" id="costod3" value="{{$producto->costod3}}"name="costod3"
+                                    <input type="text" class="form-control" id="costod3" value="{{(isset($producto->costod3))? $producto->costod3 : 0}}"name="costod3"
                                            placeholder="Ej: 22.5" required style="width: 70px">
                                 </div>
                         @endif
