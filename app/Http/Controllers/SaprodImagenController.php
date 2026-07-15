@@ -68,9 +68,9 @@ class SaprodImagenController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'codprod' => 'required|string',
-            'imagen' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
-            'tipo' => 'in:principal,secundaria,thumbnail,icono',
-            'orden' => 'integer|min:0'
+            'imagen'  => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+            'tipo'    => 'in:principal,secundaria,thumbnail,icono',
+            'orden'   => 'integer|min:0'
         ]);
 
         if ($validator->fails()) {
@@ -96,7 +96,7 @@ class SaprodImagenController extends Controller
         if (!$producto) {
             return response()->json([
                 'success' => false,
-                'error' => 'Producto no encontrado'
+                'error'   => 'Producto no encontrado'
             ], 404);
         }
 
@@ -132,14 +132,14 @@ class SaprodImagenController extends Controller
         $this->comprimirImagenProducto($file->getPathname(), $rutaCompleta, $extension, $tipo);
 
         $imagenModel = SaprodImagen::create([
-            'codprod' => $codprod,
-            'comercial' => $comercialid,
+            'codprod'         => $codprod,
+            'comercial'       => $comercialid,
             'nombre_original' => $nombreOriginal,
-            'nombre_archivo' => $nombreArchivo,
-            'ruta' => $this->uploadPath . '/' . $nombreArchivo,
-            'tipo' => $tipo,
-            'orden' => $orden,
-            'activo' => 1
+            'nombre_archivo'  => $nombreArchivo,
+            'ruta'            => $this->uploadPath . '/' . $nombreArchivo,
+            'tipo'            => $tipo,
+            'orden'           => $orden,
+            'activo'          => 1
         ]);
 
         $prodsucursal = Saprodsucursal::with('producto')->where('codprod', $producto->codprod)->get();
@@ -152,8 +152,8 @@ class SaprodImagenController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Imagen subida correctamente',
-            'imagen' => $imagenModel,
-            'url' => asset($this->uploadPath . '/' . $nombreArchivo)
+            'imagen'  => $imagenModel,
+            'url'     => asset($this->uploadPath . '/' . $nombreArchivo)
         ]);
     }
 
@@ -163,7 +163,7 @@ class SaprodImagenController extends Controller
     public function uploadMultiple(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'codprod' => 'required|string',
+            'codprod'    => 'required|string',
             'imagenes.*' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120'
         ]);
 
@@ -178,7 +178,7 @@ class SaprodImagenController extends Controller
 
         $comercial   = Sacomercial::find($comercialid);
         $match       = $comercial->match;
-        $codprod = $request->codprod;
+        $codprod     = $request->codprod;
 
         $producto = Saprod::where('codprod', $codprod)
             ->where('comercial', $comercialid)
@@ -202,22 +202,22 @@ class SaprodImagenController extends Controller
         foreach ($request->file('imagenes') as $index => $file) {
             try {
                 $nombreOriginal = $file->getClientOriginalName();
-                $extension = strtolower($file->getClientOriginalExtension());
-                $nombreArchivo = time() . '_' . uniqid($codprod . '_') . '_' . $index . '.' . $extension;
+                $extension      = strtolower($file->getClientOriginalExtension());
+                $nombreArchivo  = time() . '_' . uniqid($codprod . '_') . '_' . $index . '.' . $extension;
 
-                $rutaCompleta = $path . '/' . $nombreArchivo;
+                $rutaCompleta   = $path . '/' . $nombreArchivo;
 
                 $this->comprimirImagenProducto($file->getPathname(), $rutaCompleta, $extension, 'secundaria');
 
                 $imagenModel = SaprodImagen::create([
-                    'codprod' => $codprod,
-                    'comercial' => $comercialid,
+                    'codprod'         => $codprod,
+                    'comercial'       => $comercialid,
                     'nombre_original' => $nombreOriginal,
-                    'nombre_archivo' => $nombreArchivo,
-                    'ruta' => $this->uploadPath . '/' . $nombreArchivo,
-                    'tipo' => 'secundaria',
-                    'orden' => $index,
-                    'activo' => 1
+                    'nombre_archivo'  => $nombreArchivo,
+                    'ruta'            => $this->uploadPath . '/' . $nombreArchivo,
+                    'tipo'            => 'secundaria',
+                    'orden'           => $index,
+                    'activo'          => 1
                 ]);
 
                 $imagenesSubidas[] = $imagenModel;
@@ -340,34 +340,45 @@ class SaprodImagenController extends Controller
      */
     public function setPrincipal($id)
     {
-        $comercial = session('comercialid');
 
-        $imagen = SaprodImagen::where('id', $id)
-            ->where('comercial', $comercial)
-            ->first();
+        $comercialid = session('comercialid') ;
+
+        $comercial   = Sacomercial::find($comercialid);
+        $match       = $comercial->match;
+
+        $imagen      = SaprodImagen::where('id', $id)
+                        ->where('comercial', $comercialid)
+                        ->first();
 
         if (!$imagen) {
             return response()->json([
                 'success' => false,
-                'error' => 'Imagen no encontrada'
+                'error'   => 'Imagen no encontrada'
             ], 404);
         }
 
         // Desactivar la principal anterior
         SaprodImagen::where('codprod', $imagen->codprod)
-            ->where('comercial', $comercial)
+            ->where('comercial', $comercialid)
             ->where('tipo', 'principal')
-            ->update(['activo' => 0]);
+            ->update(['tipo' => 'secundaria']);
 
         // Establecer esta como principal
-        $imagen->tipo = 'principal';
+        $imagen->tipo   = 'principal';
         $imagen->activo = 1;
         $imagen->save();
+
+        $prodsucursal = Saprodsucursal::with('producto')->where('codprod', $imagen->codprod)->get();
+        if($prodsucursal)
+            foreach ($prodsucursal as $item){
+                if($item->producto->comercial == $match)
+                    $item->delete();
+            }
 
         return response()->json([
             'success' => true,
             'message' => 'Imagen establecida como principal',
-            'imagen' => $imagen
+            'imagen'  => $imagen
         ]);
     }
 
@@ -385,7 +396,7 @@ class SaprodImagenController extends Controller
         if (!$imagen) {
             return response()->json([
                 'success' => false,
-                'error' => 'Imagen no encontrada'
+                'error'   => 'Imagen no encontrada'
             ], 404);
         }
 
@@ -393,7 +404,7 @@ class SaprodImagenController extends Controller
         if ($imagen->tipo === 'principal') {
             return response()->json([
                 'success' => false,
-                'error' => 'La imagen principal no puede ser thumbnail'
+                'error'   => 'La imagen principal no puede ser thumbnail'
             ], 400);
         }
 
@@ -401,16 +412,16 @@ class SaprodImagenController extends Controller
         SaprodImagen::where('codprod', $imagen->codprod)
             ->where('comercial', $comercial)
             ->where('tipo', 'thumbnail')
-            ->update(['activo' => 0]);
+            ->update(['tipo' => 'secundaria']);
 
-        $imagen->tipo = 'thumbnail';
+        $imagen->tipo   = 'thumbnail';
         $imagen->activo = 1;
         $imagen->save();
 
         return response()->json([
             'success' => true,
             'message' => 'Imagen establecida como thumbnail',
-            'imagen' => $imagen
+            'imagen'  => $imagen
         ]);
     }
 
@@ -428,7 +439,7 @@ class SaprodImagenController extends Controller
         if (!$imagen) {
             return response()->json([
                 'success' => false,
-                'error' => 'Imagen no encontrada'
+                'error'   => 'Imagen no encontrada'
             ], 404);
         }
 
@@ -436,7 +447,7 @@ class SaprodImagenController extends Controller
         if ($imagen->tipo === 'principal') {
             return response()->json([
                 'success' => false,
-                'error' => 'La imagen principal no puede ser icono'
+                'error'   => 'La imagen principal no puede ser icono'
             ], 400);
         }
 
@@ -444,16 +455,16 @@ class SaprodImagenController extends Controller
         SaprodImagen::where('codprod', $imagen->codprod)
             ->where('comercial', $comercial)
             ->where('tipo', 'icono')
-            ->update(['activo' => 0]);
+            ->update(['tipo' => 'secundaria']);
 
-        $imagen->tipo = 'icono';
+        $imagen->tipo   = 'icono';
         $imagen->activo = 1;
         $imagen->save();
 
         return response()->json([
             'success' => true,
             'message' => 'Imagen establecida como icono',
-            'imagen' => $imagen
+            'imagen'  => $imagen
         ]);
     }
 
@@ -469,7 +480,7 @@ class SaprodImagenController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'errors' => $validator->errors()
+                'errors'  => $validator->errors()
             ], 422);
         }
 
@@ -483,7 +494,7 @@ class SaprodImagenController extends Controller
         if (!$imagen) {
             return response()->json([
                 'success' => false,
-                'error' => 'Imagen no encontrada'
+                'error'   => 'Imagen no encontrada'
             ], 404);
         }
 
@@ -493,7 +504,7 @@ class SaprodImagenController extends Controller
                 ->where('comercial', $comercial)
                 ->where('tipo', 'principal')
                 ->where('id', '!=', $id)
-                ->update(['activo' => 0]);
+                ->update(['tipo' => 'secundaria']);
         }
 
         // Si es thumbnail o icono, desactivar los anteriores del mismo tipo
@@ -502,18 +513,18 @@ class SaprodImagenController extends Controller
                 ->where('comercial', $comercial)
                 ->where('tipo', $nuevoTipo)
                 ->where('id', '!=', $id)
-                ->update(['activo' => 0]);
+                ->update(['tipo' => 'secundaria']);
         }
 
         // Si la imagen era principal y ahora cambia a otro tipo, no hay problema
-        $imagen->tipo = $nuevoTipo;
+        $imagen->tipo   = $nuevoTipo;
         $imagen->activo = 1;
         $imagen->save();
 
         return response()->json([
             'success' => true,
             'message' => 'Tipo de imagen actualizado correctamente',
-            'imagen' => $imagen
+            'imagen'  => $imagen
         ]);
     }
 
@@ -523,15 +534,15 @@ class SaprodImagenController extends Controller
     public function updateOrder(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'ordenes' => 'required|array',
-            'ordenes.*.id' => 'required|integer|exists:saprod_imagenes,id',
+            'ordenes'         => 'required|array',
+            'ordenes.*.id'    => 'required|integer|exists:saprod_imagenes,id',
             'ordenes.*.orden' => 'required|integer|min:0'
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'errors' => $validator->errors()
+                'errors'  => $validator->errors()
             ], 422);
         }
 
@@ -559,14 +570,13 @@ class SaprodImagenController extends Controller
         $imagen = SaprodImagen::where('codprod', $codprod)
             ->where('comercial', $comercial)
             ->where('tipo', 'principal')
-            ->where('activo', 1)
             ->first();
 
         if ($imagen) {
             return response()->json([
                 'success' => true,
-                'imagen' => $imagen,
-                'url' => asset($imagen->ruta)
+                'imagen'  => $imagen,
+                'url'     => asset($imagen->ruta)
             ]);
         }
 
@@ -580,8 +590,8 @@ class SaprodImagenController extends Controller
         if ($imagen) {
             return response()->json([
                 'success' => true,
-                'imagen' => $imagen,
-                'url' => asset($imagen->ruta),
+                'imagen'  => $imagen,
+                'url'     => asset($imagen->ruta),
                 'es_alternativa' => true
             ]);
         }
