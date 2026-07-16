@@ -36,12 +36,18 @@ class SaprodExport implements FromCollection, WithHeadings
         $comercial  = session('comercialid') ;
         $codalte    = $this->codalte;
 
-        return Saprod::selectRaw("
+        $saprod     = Saprod::selectRaw("
         codprod,descrip,costod as precio1, costod2 as precio2, costod3 as precio3, preciod as costo,
         refere as referencia, marca,  existen, codinst  ")
-            ->where("comercial",$comercial)
-            ->whereRaw(" codinst in (select codinst from sainsta where codalte like '$codalte%')")
-            ->orderBy('marca')->get();
+            ->where("comercial", $comercial);
+
+        if($codalte !='todo'){
+            $saprod = $saprod->whereRaw(" codinst in (select codinst from sainsta where codalte like '$codalte%')");
+        }
+
+        $saprod = $saprod->orderBy('marca')->get();
+
+        return $saprod;
 
     }
 }
