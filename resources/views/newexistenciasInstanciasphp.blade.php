@@ -32,7 +32,7 @@
                                     SUM(a.preciod * c.Existen) AS preciod
                                 FROM saprod a
                                 INNER JOIN sainsta b ON a.CodInst = b.CodInst AND b.tipoins = 0 AND b.comercial = $comercial AND b.codalte like '$codalte%'
-                                INNER JOIN saexis c ON a.codprod = c.codprod AND c.fk_sucursal = $fk_sucursal
+                                INNER JOIN newsaexis c ON a.codprod = c.codprod AND c.fk_sucursal = $fk_sucursal
                                 WHERE a.comercial = $comercial
                                 GROUP BY c.fk_sucursal
                             ";
@@ -94,7 +94,7 @@
                                 SELECT a.id, a.codprod, a.descrip, a.preciod, SUM(c.Existen) AS existen
                                 FROM saprod a
                                 INNER JOIN sainsta b ON a.CodInst = b.CodInst AND b.tipoins = 0 AND b.comercial = $comercial AND b.codalte like '$codalte%'
-                                INNER JOIN saexis c ON a.codprod = c.codprod AND c.existen > 0 $datasucu
+                                INNER JOIN newsaexis c ON a.codprod = c.codprod AND c.existen > 0 $datasucu
                                 WHERE a.comercial = $comercial
                                 GROUP BY a.id, a.codprod, a.descrip, a.preciod
                                 ORDER BY a.descrip
