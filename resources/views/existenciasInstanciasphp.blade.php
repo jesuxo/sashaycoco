@@ -31,7 +31,7 @@
                                 $datacodalte = "AND b.codalte  = '$codalte'";
 
 
-                             echo  $sqlcostoinv = "
+                                $sqlcostoinv = "
                                 SELECT
                                     SUM(c.Existen) AS existen,
                                     SUM(a.preciod * c.Existen) AS preciod
