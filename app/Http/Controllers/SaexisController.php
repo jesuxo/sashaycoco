@@ -58,7 +58,7 @@ class SaexisController extends Controller
                         $saprod   = Saprod::where(['codprod'=>  $prd->codprod, 'comercial'=> $comercial])->first();
 
                         if(isset($saprod) and isset($saprod->codprod)){
-                            $saprod->existen = $sumaexisten;
+                            $saprod->newexisten = $sumaexisten;
                             $saprod->save();
                         }else{
 

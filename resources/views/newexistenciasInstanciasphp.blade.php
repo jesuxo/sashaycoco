@@ -180,8 +180,8 @@
             return new bootstrap.Tooltip(tooltipTriggerEl)
         });
 
-        // Función para obtener detalle de un producto por sucursal
-        $(document).on('click', '.btn-ver-detalle', function() {
+        // Función para obtener detalle de un producto por sucursal aqui
+        $('.btn-ver-detalle').unbind('click').bind('click',function () {
             let codprod = $(this).data('codprod');
             let nombreProducto = $(this).data('producto');
             let modalBody = $('#detalleProductoBody');

@@ -1245,7 +1245,7 @@ class SaprodController extends Controller
         $auxsucu = implode(',' , $auxsucu);
 
         $existencias = NewSaexis::with('deposito')
-            ->whereRaw("fk_sucursal in ($auxsucu) and codprod='$codprod' and newexisten > 0")
+            ->whereRaw("fk_sucursal in ($auxsucu) and codprod='$codprod' and existen > 0")
             ->orderBy('codubic')->get();
 
         return response()->json(['success'=>'success', 'existencias' => $existencias]);
