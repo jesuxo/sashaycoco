@@ -1248,6 +1248,8 @@ class SaprodController extends Controller
             ->whereRaw("fk_sucursal in ($auxsucu) and codprod='$codprod' and existen > 0")
             ->orderBy('codubic')->get();
 
+        dd($existencias);
+
         return response()->json(['success'=>'success', 'existencias' => $existencias]);
     }
 
