@@ -41,7 +41,7 @@
                         @if(isset($costoinven[0]) && $costoinven[0]->existen > 0)
                             @php
                                 $totalUnidades += $costoinven[0]->existen;
-                                $totalCosto += $costoinven[0]->preciod;
+                                $totalCosto    += $costoinven[0]->preciod;
                             @endphp
                             <tr>
                                 <td class="fw-medium">{{ $sucursal->descrip }}</td>
@@ -204,7 +204,7 @@
                             let depositoNombre = item.deposito ? item.deposito.descrip : item.codubic;
                             let sucursalNombre = item.sucursal ? item.sucursal.descrip : 'Sin sucursal';
                             html += `<tr>
-                                        <td>${depositoNombre}  </td>
+                                        <td>${depositoNombre} 4 </td>
                                         <td class="text-center fw-bold">${parseFloat(item.existen).toLocaleString('es-VE')}</td>
                                     </tr>`;
                         });

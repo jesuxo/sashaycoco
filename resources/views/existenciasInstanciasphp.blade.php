@@ -234,7 +234,7 @@
                             let depositoNombre = item.deposito ? item.deposito.descrip : item.codubic;
                             let sucursalNombre = item.sucursal ? item.sucursal.descrip : 'Sin sucursal';
                             html += `<tr>
-                                        <td>${depositoNombre}  </td>
+                                        <td>${depositoNombre} 2 </td>
                                         <td class="text-center fw-bold">${parseFloat(item.existen).toLocaleString('es-VE')}</td>
                                     </tr>`;
                         });
