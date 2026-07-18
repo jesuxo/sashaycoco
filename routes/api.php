@@ -30,6 +30,10 @@ Route::group([ 'middleware' => 'check.user'], function () {
         Route::post('token/new', 'newtoken');
     });
 
+    Route::controller(\App\Http\Controllers\NewSaexisController::class)->group(function () {
+        Route::post('newsaexis/sync/exist', 'newexistencias');
+    });
+
     Route::controller(\App\Http\Controllers\SavendController::class)->group(function () {
         Route::post('savend/sync/list', 'list');
     });
