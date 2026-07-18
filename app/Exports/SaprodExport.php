@@ -38,7 +38,7 @@ class SaprodExport implements FromCollection, WithHeadings
 
         $saprod     = Saprod::selectRaw("
         codprod,descrip,costod as precio1, costod2 as precio2, costod3 as precio3, preciod as costo,
-        refere as referencia, marca,  existen, codinst  ")
+        refere as referencia, marca,  newexisten, codinst  ")
             ->where("comercial", $comercial);
 
         if($codalte !='todo'){

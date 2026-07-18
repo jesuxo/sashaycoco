@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Saexis;
+use App\Models\Newsaexis;
 use App\Models\Saprod;
 use App\Models\Sasucursal;
 use Illuminate\Http\Request;
@@ -19,7 +19,7 @@ class SaexisController extends Controller
                 foreach ($productos as $prd){
 
                     if(isset($prd->codprod)){
-                        $existen = Saexis::where(['codprod'    => $prd->codprod,
+                        $existen = Newsaexis::where(['codprod'    => $prd->codprod,
                                                   'codubic'    => $prd->codubic,
                                                   'fk_sucursal'=> $prd->fk_sucursal])
                                             ->first();
@@ -28,7 +28,7 @@ class SaexisController extends Controller
                             $existen->existen = $prd->existen;
                             $existen->save();
                         }else{
-                            $existen = new Saexis();
+                            $existen = new Newsaexis();
                             $existen->existen = $prd->existen;
                             $existen->codprod = $prd->codprod;
                             $existen->codubic = $prd->codubic;
@@ -46,7 +46,7 @@ class SaexisController extends Controller
                         }
                         $auxsucu = implode(',' , $auxsucu);
 
-                        $existencias = Saexis::whereRaw("fk_sucursal in ($auxsucu) and codprod='".$prd->codprod."' and existen <> 0")
+                        $existencias = Newsaexis::whereRaw("fk_sucursal in ($auxsucu) and codprod='".$prd->codprod."' and existen <> 0")
                                                 ->orderBy('codubic')
                                                 ->get();
 

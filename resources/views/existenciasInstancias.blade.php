@@ -249,7 +249,7 @@
                                                 INNER JOIN sainsta b ON a.CodInst = b.CodInst
                                                     AND b.tipoins = 0
                                                     AND b.comercial = $comercialid
-                                                INNER JOIN saexis c ON a.codprod = c.codprod
+                                                INNER JOIN newsaexis c ON a.codprod = c.codprod
                                                     and c.fk_sucursal = $sucursalid $datasucu
                                                 INNER JOIN sasucursal d ON c.fk_sucursal = d.id
                                                     AND d.fk_comercial = $comercialid
@@ -394,7 +394,7 @@
                                                     AND b.tipoins = 0
                                                     AND b.comercial = $comercialid
                                                     AND b.codinst = $codinst
-                                                INNER JOIN saexis c ON a.codprod = c.codprod $datasucu
+                                                INNER JOIN newsaexis c ON a.codprod = c.codprod $datasucu
                                                 INNER JOIN sasucursal d ON c.fk_sucursal = d.id
                                                     AND d.fk_comercial = $comercialid
                                                 WHERE a.comercial = $comercialid
