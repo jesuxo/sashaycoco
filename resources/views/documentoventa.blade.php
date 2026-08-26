@@ -1,9 +1,9 @@
 @extends('layouts.master')
 @section('title')
-   @if($tipofac == 'A'  )
+   @if($tipofac == 'A' or $tipofac == 'Z'  )
        VENTA NRO: {{$numerod}}
    @endif
-   @if($tipofac == 'B'  )
+   @if($tipofac == 'B'  or $tipofac == 'W'  )
         DEVOLUCION NRO: {{$numerod}}
    @endif
 @endsection

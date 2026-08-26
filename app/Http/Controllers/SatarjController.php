@@ -71,7 +71,12 @@ class SatarjController extends Controller
                 'b.codtarj',
                 'f.codoper',
                 'b.clase',
-                DB::raw("(CASE f.TipoFac WHEN 'A' THEN saipavta.monto WHEN 'B' THEN (saipavta.monto * -1) ELSE 0 END) as bs"),
+                DB::raw("(CASE f.TipoFac
+                        WHEN 'A' THEN saipavta.monto
+                        WHEN 'Z' THEN saipavta.monto
+                        WHEN 'B' THEN (saipavta.monto * -1)
+                        WHEN 'W' THEN (saipavta.monto * -1)
+                        ELSE 0 END) as bs"),
                 DB::raw("b.descrip as tarjeta"),
                 DB::raw("c.descrip as sucursal")
             ])
@@ -303,7 +308,12 @@ class SatarjController extends Controller
                 'saipavta.Descrip',
                 'b.codtarj',
                 'b.clase',
-                DB::raw("(CASE TipoFac WHEN 'A' THEN saipavta.dolares WHEN 'B' THEN (saipavta.dolares * -1) ELSE 0 END) as dolares"),
+                DB::raw("(CASE TipoFac
+                                    WHEN 'A' THEN saipavta.dolares
+                                    WHEN 'Z' THEN saipavta.dolares
+                                    WHEN 'B' THEN (saipavta.dolares * -1)
+                                    WHEN 'W' THEN (saipavta.dolares * -1)
+                                    ELSE 0 END) as dolares"),
                 DB::raw("b.descrip as tarjeta"),
                 DB::raw("c.descrip as sucursal")
             ])
@@ -507,7 +517,12 @@ class SatarjController extends Controller
 
         $montos = DB::table('saipavta as a')
             ->select([ 'a.fk_sucursal', 'b.codtarj', 'b.clase', 'f.numerod', 'f.codclie',
-                DB::raw(" (CASE a.tipofac WHEN 'A' THEN a.dolares WHEN 'B' THEN (a.dolares * -1) ELSE 0 END) as dolares"),
+                DB::raw(" (CASE a.tipofac
+                                    WHEN 'A' THEN a.dolares
+                                    WHEN 'Z' THEN a.dolares
+                                    WHEN 'B' THEN (a.dolares * -1)
+                                    WHEN 'W' THEN (a.dolares * -1)
+                                    ELSE 0 END) as dolares"),
                 DB::raw("b.descrip as tarjeta"),
                 DB::raw("c.descrip as sucursal"),
                 DB::raw("f.descrip as cliente")

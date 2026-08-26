@@ -106,7 +106,7 @@ class SaacxcController extends Controller
                                                             and c.tipocxc = '10'
                                                             and g.fk_sucursal= c.fk_sucursal
                                                             and g.codclie = a.codclie
-                                                            and g.tipofac = 'A'
+                                                            and g.tipofac in ('A','Z')
                                                         )* ((c.saldo/c.tasadolar)/c.montodolares))
                                                     ,0)) as saldodivisa
                                                     FROM
@@ -195,7 +195,7 @@ class SaacxcController extends Controller
                                                             and c.tipocxc = '10'
                                                             and g.fk_sucursal= c.fk_sucursal
                                                             and g.codclie = a.codclie
-                                                            and g.tipofac = 'A'
+                                                            and g.tipofac in ('A','Z')
                                                         )* ((c.saldo/c.tasadolar)/c.montodolares))
                                                     ,0)) as saldodivisa
                                                     FROM
@@ -555,7 +555,7 @@ class SaacxcController extends Controller
                     and c.tipocxc = '10'
                     and g.fk_sucursal= c.fk_sucursal
                     and g.codclie = a.codclie
-                    and g.tipofac = 'A'
+                    and g.tipofac in ('A','Z')
                     ) * ((c.saldo/c.tasadolar)/c.montodolares)
                 ,0)) as saldodivisa
             FROM saclie AS a

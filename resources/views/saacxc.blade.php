@@ -243,7 +243,7 @@
                                                  and c.tipocxc = '10'
                                                  and g.fk_sucursal = c.fk_sucursal
                                                  and g.codclie = a.codclie
-                                                 and g.tipofac = 'A'
+                                                 and g.tipofac in ('A','Z')
                                                 ) * ((c.saldo/c.tasadolar)/c.montodolares), 0
                                             )) as saldodivisa
                                         FROM saclie AS a
@@ -424,7 +424,7 @@
                                          and c.tipocxc = '10'
                                          and g.fk_sucursal = c.fk_sucursal
                                          and g.codclie = a.codclie
-                                         and g.tipofac = 'A'
+                                         and g.tipofac in ('A','Z')
                                         ) * ((c.saldo/c.tasadolar)/c.montodolares), 0
                                     )) as saldodivisa
                                 FROM saclie AS a
@@ -1448,7 +1448,7 @@
 
             $.ajax({
                 type: 'POST',
-                data: { tipofac: tipofac || 'A', numerod: numerod, fksucu: fksucu || '' },
+                data: { tipofac: tipofac || 'Z', numerod: numerod, fksucu: fksucu || '' },
                 url: '/openDoc',
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 success: function(response) {

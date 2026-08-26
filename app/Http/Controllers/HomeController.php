@@ -148,7 +148,7 @@ class HomeController extends Controller
                 $join->on('g.codvend', '=', 'f.codvend')
                     ->where('g.comercial', '=', $comercialid);
             })
-            ->whereIn('f.tipofac', ['A', 'B'])
+            ->whereIn('f.tipofac', ['A', 'B','Z','W'])
             ->whereRaw("f.fk_sucursal in ($arraysucursales)");
 
         // Filtro por estación si se seleccionó
@@ -544,7 +544,7 @@ class HomeController extends Controller
                 $ttotalventac += $cobranza->montodolares;
             }
 
-        $topprod = Saitemfac::whereIn('TipoFac', ['A', 'B'])
+        $topprod = Saitemfac::whereIn('TipoFac', ['A', 'B','Z','W'])
             ->selectRaw("CodItem, SUM(Cantidad * Signo) as salidas ")
             ->where('esserv', 0)
             ->whereRaw("fk_sucursal in ($arraysucursales)")
@@ -581,7 +581,12 @@ class HomeController extends Controller
                 'b.codtarj',
                 'f.codoper',
                 'b.clase',
-                DB::raw("(CASE f.TipoFac WHEN 'A' THEN saipavta.monto WHEN 'B' THEN (saipavta.monto * -1) ELSE 0 END) as bs"),
+                DB::raw("(CASE f.TipoFac
+                                    WHEN 'A' THEN saipavta.monto
+                                    WHEN 'Z' THEN saipavta.monto
+                                    WHEN 'B' THEN (saipavta.monto * -1)
+                                    WHEN 'W' THEN (saipavta.monto * -1)
+                                    ELSE 0 END) as bs"),
                 DB::raw("b.descrip as tarjeta"),
                 DB::raw("c.descrip as sucursal")
             ])
@@ -726,7 +731,12 @@ class HomeController extends Controller
                 'b.codtarj',
                 'f.codoper',
                 'b.clase',
-                DB::raw("(CASE f.TipoFac WHEN 'A' THEN saipavta.dolares WHEN 'B' THEN (saipavta.dolares * -1) ELSE 0 END) as dolares"),
+                DB::raw("(CASE f.TipoFac
+                                WHEN 'A' THEN saipavta.dolares
+                                WHEN 'Z' THEN saipavta.dolares
+                                WHEN 'B' THEN (saipavta.dolares * -1)
+                                WHEN 'W' THEN (saipavta.dolares * -1)
+                                ELSE 0 END) as dolares"),
                 DB::raw("b.descrip as tarjeta"),
                 DB::raw("c.descrip as sucursal")
             ])
@@ -989,7 +999,7 @@ class HomeController extends Controller
             ->with([
                 'sucursal.comercial:id',
             ])
-            ->whereIn('TipoFac', ['A', 'B'])
+            ->whereIn('TipoFac', ['A', 'B','Z','W'])
             ->whereRaw("fk_sucursal in ($arraysucursales)")
             ->whereBetween('fechat', ["{$fec1} 00:00:00", "{$fec2} 23:59:59"])
             ->whereHas('sucursal.comercial', function ($q) use ($comercialid) {
@@ -1114,7 +1124,12 @@ class HomeController extends Controller
         $montos = DB::table('saipavta as a')
             ->select([
                 'b.codtarj',
-                DB::raw("SUM(CASE a.tipofac WHEN 'A' THEN a.monto WHEN 'B' THEN (a.monto * -1) ELSE 0 END) as bs"),
+                DB::raw("SUM(CASE a.tipofac
+                                WHEN 'A' THEN a.monto
+                                WHEN 'Z' THEN a.monto
+                                WHEN 'B' THEN (a.monto * -1)
+                                WHEN 'W' THEN (a.monto * -1)
+                                ELSE 0 END) as bs"),
             ])
             ->join('satarj as b', 'a.CodPago', '=', 'b.codtarj')
             ->join('sasucursal as c', 'a.fk_sucursal', '=', 'c.id')
@@ -1200,7 +1215,12 @@ class HomeController extends Controller
         $montos = DB::table('saipavta as a')
             ->select([
                 'b.codtarj',
-                DB::raw("SUM(CASE a.tipofac WHEN 'A' THEN a.dolares WHEN 'B' THEN (a.dolares * -1) ELSE 0 END) as dolares")
+                DB::raw("SUM(CASE a.tipofac
+                                    WHEN 'A' THEN a.dolares
+                                    WHEN 'Z' THEN a.dolares
+                                    WHEN 'B' THEN (a.dolares * -1)
+                                    WHEN 'W' THEN (a.dolares * -1)
+                                    ELSE 0 END) as dolares")
             ])
             ->whereRaw("a.fk_sucursal in ($arraysucursales)")
             ->join('satarj as b', 'a.codpago', '=', 'b.codtarj')

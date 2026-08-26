@@ -43,7 +43,7 @@
                                                        class="openDocumentoEnLinea btn btn-sm btn-outline-info"
                                                        data-fksucu   = "{{ $cxc->fk_sucursal ?? '' }}"
                                                        data-numerod  = "{{ $cxc->numero }}"
-                                                       data-tipofac  = "{{ $cxc->tipofac ?? 'A' }}"
+                                                       data-tipofac  = "{{ $cxc->tipofac ?? 'Z' }}"
                                                        data-nrounico = "{{ $cxc->nrounico ?? 0 }}"
                                                        data-cliente  = "{{ $cxc->cliente }}">
                                                         <i class="bi bi-eye"></i> {{ $cxc->numero }}

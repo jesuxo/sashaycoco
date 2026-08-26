@@ -235,7 +235,7 @@ class SafactController extends Controller
 
         // Devoluciones relacionadas (solo para facturas tipo A)
         $devoluciones = [];
-        if ($tipofac == 'A') {
+        if ($tipofac == 'A'  ) {
             $devoluciones = Safact::selectRaw("
                 NumeroD, date_format(fechat, '%d/%m/%Y') as fecha,
                 (mtototal/tasa_dolar) as monto_usd, numeror, fk_sucursal, TipoFac,
@@ -248,9 +248,23 @@ class SafactController extends Controller
                 ->get();
         }
 
+        if ( $tipofac == 'Z') {
+            $devoluciones = Safact::selectRaw("
+                NumeroD, date_format(fechat, '%d/%m/%Y') as fecha,
+                (mtototal/tasa_dolar) as monto_usd, numeror, fk_sucursal, TipoFac,
+                notas1
+            ")
+                ->where('numeror', $numerod)
+                ->where('TipoFac', 'W')
+                ->where('fk_sucursal', $fk_sucu)
+                ->orderBy('fechat', 'asc')
+                ->get();
+        }
+
+
         // Si es devolución, obtener factura original
         $facturaOriginal = null;
-        if ($tipofac == 'B' && $documento && $documento->numeror) {
+        if (($tipofac == 'B' ) && $documento && $documento->numeror) {
             $facturaOriginal = Safact::selectRaw("
                 NumeroD, date_format(fechat, '%d/%m/%Y') as fecha,
                 (mtototal/tasa_dolar) as monto_usd,
@@ -258,6 +272,18 @@ class SafactController extends Controller
             ")
                 ->where('NumeroD', $documento->numeror)
                 ->where('TipoFac', 'A')
+                ->where('fk_sucursal', $fk_sucu)
+                ->first();
+        }
+
+        if ((  $tipofac == 'W') && $documento && $documento->numeror) {
+            $facturaOriginal = Safact::selectRaw("
+                NumeroD, date_format(fechat, '%d/%m/%Y') as fecha,
+                (mtototal/tasa_dolar) as monto_usd,
+                descrip, id3
+            ")
+                ->where('NumeroD', $documento->numeror)
+                ->where('TipoFac', 'Z')
                 ->where('fk_sucursal', $fk_sucu)
                 ->first();
         }
@@ -421,6 +447,19 @@ class SafactController extends Controller
                 ->get();
         }
 
+        if ($tipofac == 'Z') {
+            $devoluciones = Safact::selectRaw("
+                    NumeroD, date_format(fechat, '%d/%m/%Y') as fecha,
+                    (mtototal/tasa_dolar) as monto_usd, numeror, fk_sucursal, TipoFac,
+                    notas1
+                ")
+                ->where('numeror'    , $numerod)
+                ->where('TipoFac'    , 'W')
+                ->where('fk_sucursal', $fk_sucu)
+                ->orderBy('fechat'   , 'desc')
+                ->get();
+        }
+
         $facturaOriginal = null;
         if ($tipofac == 'B' and $documento and $documento->numeror) {
             $facturaOriginal = Safact::selectRaw("
@@ -430,6 +469,18 @@ class SafactController extends Controller
                 ")
                 ->where('NumeroD', $documento->numeror)
                 ->where('TipoFac', 'A')
+                ->where('fk_sucursal', $fk_sucu)
+                ->first();
+        }
+
+        if ($tipofac == 'W' and $documento and $documento->numeror) {
+            $facturaOriginal = Safact::selectRaw("
+                    NumeroD, date_format(fechat, '%d/%m/%Y') as fecha,
+                    (mtototal/tasa_dolar) as monto_usd,
+                    descrip, id3
+                ")
+                ->where('NumeroD', $documento->numeror)
+                ->where('TipoFac', 'Z')
                 ->where('fk_sucursal', $fk_sucu)
                 ->first();
         }
