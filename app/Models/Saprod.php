@@ -10,7 +10,7 @@ class Saprod extends Model
     use HasFactory;
 
     protected $table    = 'saprod';
-    protected $fillable = ['codprod','descrip','descrip2','descrip3',
+    protected $fillable = ['codprod','descrip','descrip2','descrip3','preciodolarfijo',
                           'marca','refere','codinst','observaciones','activo',
                           'esexento','exdecimal','cantxempaq','volumen','peso','unidad',
                           'preciod',  'preciod2','costod','costod2','costod3'];

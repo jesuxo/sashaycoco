@@ -100,6 +100,8 @@
                                     <td width="5%" align="center" class="tdlineff" > BS.T</td>
                                     <td width="6%" align="center" class="tdlineff" > USD</td>
                                     <td width="5%" align="center" class="tdlineff" > USD.T</td>
+                                    <td width="6%" align="center" class="tdlineff" > COP</td>
+                                    <td width="5%" align="center" class="tdlineff" > COP.T</td>
                                     <td width="5%" align="center" class="tdlineff" > CREDITO </td>
                                     <td width="6%" align="center" class="tdlineff" > TOTAL USD</td>
                                 </tr>
@@ -129,12 +131,14 @@
                                         @endphp
                                         <tr @php if(($n%2)==0){echo 'bgcolor="#ddd"'; }else{echo 'bgcolor="#fff"';} @endphp>
                                             <td width="39%" height="30"align="left" class="tdline" >{{$sucursal}}</td>
-                                            <td width="6%" align="right" class="tdline" >  {{($listado[$indexsuc]['cancele']!=0)?number_format($listado[$indexsuc]['cancele'],2,',','.') : ''}}</td>
-                                            <td width="5%" align="right" class="tdline" >  {{($listado[$indexsuc]['cancelt']!=0)?number_format($listado[$indexsuc]['cancelt'],2,',','.') : ''}}</td>
-                                            <td width="6%" align="right" class="tdline" >  {{($listado[$indexsuc]['dolares']!=0)?number_format($listado[$indexsuc]['dolares'],2,',','.') : ''}}</td>
-                                            <td width="5%" align="right" class="tdline" >  {{($listado[$indexsuc]['transf'] !=0)?number_format($listado[$indexsuc]['transf'] ,2,',','.') : ''}}</td>
-                                            <td width="5%" align="right" class="tdline" >  {{($listado[$indexsuc]['credito']!=0)?number_format($listado[$indexsuc]['credito'],2,',','.') : ''}}</td>
-                                            <td width="6%" align="right" class="tdline" >  {{($listado[$indexsuc]['totalventa']!=0)?number_format($listado[$indexsuc]['totalventa'],2,',','.') : ''}}</td>
+                                            <td width="6%" align="right" class="tdline" >  {{($listado[$indexsuc]['cancele']    !=0)?number_format($listado[$indexsuc]['cancele']    ,2,',','.') : ''}}</td>
+                                            <td width="5%" align="right" class="tdline" >  {{($listado[$indexsuc]['cancelt']    !=0)?number_format($listado[$indexsuc]['cancelt']    ,2,',','.') : ''}}</td>
+                                            <td width="6%" align="right" class="tdline" >  {{($listado[$indexsuc]['dolares']    !=0)?number_format($listado[$indexsuc]['dolares']    ,2,',','.') : ''}}</td>
+                                            <td width="5%" align="right" class="tdline" >  {{($listado[$indexsuc]['transf']     !=0)?number_format($listado[$indexsuc]['transf']     ,2,',','.') : ''}}</td>
+                                            <td width="6%" align="right" class="tdline" >  {{($listado[$indexsuc]['pesos']      !=0)?number_format($listado[$indexsuc]['pesos']      ,2,',','.') : ''}}</td>
+                                            <td width="5%" align="right" class="tdline" >  {{($listado[$indexsuc]['peso_tranf'] !=0)?number_format($listado[$indexsuc]['peso_tranf'] ,2,',','.') : ''}}</td>
+                                            <td width="5%" align="right" class="tdline" >  {{($listado[$indexsuc]['credito']    !=0)?number_format($listado[$indexsuc]['credito']    ,2,',','.') : ''}}</td>
+                                            <td width="6%" align="right" class="tdline" >  {{($listado[$indexsuc]['totalventa'] !=0)?number_format($listado[$indexsuc]['totalventa'] ,2,',','.') : ''}}</td>
                                         </tr>
                                         @php $n++; @endphp
                                     @endforeach
@@ -142,12 +146,14 @@
 
                                 <tr bgcolor="#ddd">
                                     <td width="39%" height="30"align="left" class="tdline" >TOTALES</td>
-                                    <td width="6%" align="right" class="tdline" >{{ ($tcancele!=0)? number_format($tcancele,2,',','.') : ''}}     </td>
-                                    <td width="5%" align="right" class="tdline" >{{ ($tcancelt!=0)?number_format($tcancelt,2,',','.'): ''}}        </td>
-                                    <td width="6%" align="right" class="tdline" >{{ ($tdolares!=0)?number_format($tdolares,2,',','.'): ''}}       </td>
-                                    <td width="5%" align="right" class="tdline" >{{ ($ttransf!=0)?number_format($ttransf,2,',','.'): ''}}         </td>
-                                    <td width="5%" align="right" class="tdline" >{{ ($tcredito!=0)?number_format($tcredito,2,',','.'): ''}}       </td>
-                                    <td width="6%" align="right" class="tdline" >{{ ($ttotalventa!=0)?number_format($ttotalventa,2,',','.'): ''}} </td>
+                                    <td width="6%" align="right" class="tdline" >{{ ($tcancele    !=0 )? number_format($tcancele  ,2,',','.'): ''}} </td>
+                                    <td width="5%" align="right" class="tdline" >{{ ($tcancelt    !=0 )?number_format($tcancelt   ,2,',','.'): ''}} </td>
+                                    <td width="6%" align="right" class="tdline" >{{ ($tdolares    !=0 )?number_format($tdolares   ,2,',','.'): ''}} </td>
+                                    <td width="5%" align="right" class="tdline" >{{ ($ttransf     !=0 )?number_format($ttransf    ,2,',','.'): ''}} </td>
+                                    <td width="6%" align="right" class="tdline" >{{ ($tpesos      !=0 )?number_format($tpesos     ,2,',','.'): ''}} </td>
+                                    <td width="5%" align="right" class="tdline" >{{ ($tpeso_tranf !=0 )?number_format($tpeso_tranf,2,',','.'): ''}} </td>
+                                    <td width="5%" align="right" class="tdline" >{{ ($tcredito    !=0 )?number_format($tcredito   ,2,',','.'): ''}} </td>
+                                    <td width="6%" align="right" class="tdline" >{{ ($ttotalventa !=0 )?number_format($ttotalventa,2,',','.'): ''}} </td>
                                 </tr>
 
                             </table>
@@ -171,13 +177,13 @@
                             <table width="100%" border="0"   style="  border:1px solid #69ABBF; ">
                                 <tr  >
                                     <td width="19%" height="30"    align="center" class="tdline" style="font-size:12px">INSTANCIA DE INVENTARIO</td>
-                                    <td width="7%" align="center" class="tdline" style="font-size:12px; background-color:#ddd" > CANTIDAD VENDIDA</td>
-                                    <td width="18%" align="center" class="tdlineff " style="font-size:12px">TOTAL VENTA</td>
+                                    <td width="7%"  align="center" class="tdline"   style="font-size:12px; background-color:#ddd" > CANTIDAD VENDIDA</td>
+                                    <td width="18%" align="center" class="tdlineff" style="font-size:12px" > TOTAL VENTA</td>
 
-                                    <td width="17%" align="center" class="tdlineff" style="font-size:12px">TOTAL BASE VENTA</td>
-                                    <td width="18%"  align="center" class="tdlineff" style="font-size:12px">TOTAL COSTO</td>
-                                    <td width="12%" align="center" class="tdlineff" style="font-size:12px"> TOTAL UTILIDAD</td>
-                                    <td width="9%" align="center" class="tdlineff" style="font-size:12px"> % UTILIDAD</td>
+                                    <td width="17%" align="center" class="tdlineff" style="font-size:12px" > TOTAL BASE VENTA</td>
+                                    <td width="18%" align="center" class="tdlineff" style="font-size:12px" > TOTAL COSTO</td>
+                                    <td width="12%" align="center" class="tdlineff" style="font-size:12px" > TOTAL UTILIDAD</td>
+                                    <td width="9%"  align="center" class="tdlineff" style="font-size:12px" > % UTILIDAD</td>
 
                                 </tr>
 
@@ -259,7 +265,7 @@
                                 <tr bgcolor="#ddd">
                                     <td width="50%" align="center" class="tdlineff" style="font-size:12px"> VENDEDOR </td>
                                     <td width="25%" align="center" class="tdlineff" style="font-size:12px"> CANTIDAD </td>
-                                    <td width="25%" align="center" class="tdlineff"style="font-size:12px"> TOTAL    </td>
+                                    <td width="25%" align="center" class="tdlineff" style="font-size:12px"> TOTAL    </td>
                                 </tr>
                                 @php
                                     $tantos = $tcant  = $tventa   =0;

@@ -1335,9 +1335,9 @@ class SaprodController extends Controller
 
         try {
 
-            $comercial = session('comercialid') ;
+            $comercialid = session('comercialid') ;
 
-            $comercial    = Sacomercial::find($comercial);
+            $comercial    = Sacomercial::find($comercialid);
             $match        = $comercial->match;
 
             $comerciales = Sacomercial::where('match',$match)->get();
@@ -1347,6 +1347,8 @@ class SaprodController extends Controller
                 $newprod->fill($request->all());
                 $newprod->codprod   = substr($request->codprod,0,15);
 
+                if($comercial->id >1)
+                    $newprod->esexento= 0;
 
                 if(isset($request->costod3) and $request->costod3 >0) {
                     $newprod->costod  = $request->costod3;
@@ -1397,8 +1399,10 @@ class SaprodController extends Controller
         $producto  = Saprod::find($id);
         $producto->fill($request->all());
 
-        if($comercialid == 1 or $comercialid== 3 or $comercialid== 4){
+        if($comercialid == 1 ){
              $producto->esexento = 1;  //// luego ver como manejamos esto
+        }else{
+             $producto->esexento = 0;
         }
 
         if(isset($request->preciod)   ) {
