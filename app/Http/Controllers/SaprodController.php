@@ -628,7 +628,7 @@ class SaprodController extends Controller
 
         }
 
-        if(  $fec1 != '' and $codinst){
+        if(  $fec1 != '' ){
 
             if ($fec22 != '') {
                 $listadoMesAnterior = $this->obtenerVentasPeriodo($comercialid, $fec12, $fec22, $fksucursal, $codinst);
