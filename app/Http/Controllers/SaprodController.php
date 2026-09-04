@@ -131,7 +131,7 @@ class SaprodController extends Controller
         CodItem,
         SUM(Cantidad * Signo) as ventas_netas
     ")
-            ->whereIn('TipoFac', ['A', 'B'])
+            ->whereIn('TipoFac', ['A', 'B','Z','W'])
             ->where('esserv', 0)
             ->whereIn('CodItem', $productosInstancia) // Solo productos de la instancia seleccionada
             ->whereBetween('FechaE', [$fec1, $fec2])
@@ -878,7 +878,7 @@ class SaprodController extends Controller
         if($codalte !='')
             $datainst .= " and codalte like '$codalte%' ";
 
-        $datos = Saitemfac::whereRaw("TipoFac in ('A','B')")
+        $datos = Saitemfac::whereRaw("TipoFac in ('A','B','Z','W')")
             ->selectRaw("fk_sucursal, CodItem, SUM(Cantidad*Signo) as salidas, SUM(Cantidad*costodoriginal*Signo) as costod, SUM(Cantidad*preciod*Signo) as preciod")
             ->with(['sucursal', 'producto.instancia' => function($q) use($datainst) {
                 if($datainst != ''){
